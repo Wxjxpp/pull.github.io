@@ -3,130 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroBox 插件上传辅助工具</title>
+    <title>AstroBox 插件上传辅助工具 (自动化版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@octokit/rest@19.0.11/dist/index.js"></script>
     <style>
-        .step-card {
-            transition: all 0.3s ease;
-        }
-        .step-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .loader { border-top-color: #3498db; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen font-sans text-slate-900">
     <div class="max-w-3xl mx-auto px-4 py-12">
         <header class="text-center mb-12">
             <h1 class="text-4xl font-extrabold text-slate-900 mb-4">AstroBox 插件上传辅助</h1>
-            <p class="text-lg text-slate-600">简化插件上架流程，一键生成所需配置</p>
+            <p class="text-lg text-slate-600">自动化一键上架插件</p>
         </header>
 
-        <div class="space-y-8">
-            <!-- Step 1: Repository Info -->
-            <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="flex items-center mb-6">
-                    <span class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</span>
-                    <h2 class="text-xl font-bold">填写仓库信息</h2>
-                </div>
-                <div class="grid gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">GitHub 用户名</label>
-                        <input type="text" id="owner" placeholder="例如: Wxjxpp" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">插件仓库名</label>
-                        <input type="text" id="repo" placeholder="例如: my-awesome-plugin" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">默认分支</label>
-                        <input type="text" id="branch" value="main" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">构建产物目录</label>
-                        <input type="text" id="dist" value="dist" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                </div>
-                <button onclick="generate()" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md">生成配置内容</button>
-            </section>
-
-            <!-- Results Section -->
-            <div id="results" class="hidden space-y-8">
-                <!-- Step 2: Local Files -->
-                <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex items-center mb-6">
-                        <span class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</span>
-                        <h2 class="text-xl font-bold">在插件仓库根目录创建 index.txt</h2>
-                    </div>
-                    <p class="text-sm text-slate-600 mb-4">请在您的插件仓库根目录下创建一个名为 <code>index.txt</code> 的文件，内容如下：</p>
-                    <div class="relative group">
-                        <pre id="localIndexContent" class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto font-mono text-sm"></pre>
-                        <button onclick="copy('localIndexContent')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-xs text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">复制</button>
-                    </div>
-                </section>
-
-                <!-- Step 3: PR Link -->
-                <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex items-center mb-6">
-                        <span class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</span>
-                        <h2 class="text-xl font-bold">向官方仓库提交 PR</h2>
-                    </div>
-                    <p class="text-sm text-slate-600 mb-4">
-                        前往 <a href="https://github.com/AstralSightStudios/AstroBox-NG-Plugin-Repo" target="_blank" class="text-blue-600 hover:underline">AstroBox-NG-Plugin-Repo</a> 
-                        修改其根目录下的 <code>index.txt</code>，在末尾追加以下链接：
-                    </p>
-                    <div class="relative group mb-6">
-                        <pre id="remoteIndexLink" class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto font-mono text-sm"></pre>
-                        <button onclick="copy('remoteIndexLink')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-xs text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">复制</button>
-                    </div>
-                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-amber-700 font-medium">提示：请确保您的仓库是公开的，且文件已推送到 GitHub。</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+        <div id="authSection" class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-8 text-center">
+            <h2 class="text-xl font-bold mb-4">第一步：身份验证</h2>
+            <p class="text-slate-600 mb-6 text-sm">为了能代表您在 GitHub 上创建文件和提交 PR，请输入您的 GitHub Personal Access Token (PAT)。<br>需要权限：<code>public_repo</code></p>
+            <div class="max-w-md mx-auto">
+                <input type="password" id="githubToken" placeholder="输入 GitHub Token (ghp_...)" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-4 outline-none">
+                <button onclick="login()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-lg transition-colors">验证并开始</button>
+                <p class="mt-4 text-xs text-slate-400 text-left">
+                    <a href="https://github.com/settings/tokens/new?scopes=public_repo&description=AstroBox%20Plugin%20Helper" target="_blank" class="text-blue-600 hover:underline">点击此处去 GitHub 创建 Token</a> (只需勾选 public_repo)
+                </p>
             </div>
         </div>
 
+        <div id="mainSection" class="hidden space-y-8">
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img id="userAvatar" src="" class="w-8 h-8 rounded-full mr-3">
+                    <span id="userName" class="font-medium text-blue-700"></span>
+                </div>
+                <button onclick="logout()" class="text-xs text-blue-600 hover:underline">退出登录</button>
+            </div>
+
+            <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center mb-6">
+                    <span class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</span>
+                    <h2 class="text-xl font-bold">填写插件信息</h2>
+                </div>
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">插件仓库名</label>
+                        <select id="repoSelect" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">正在加载您的公开仓库...</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">默认分支</label>
+                            <input type="text" id="branch" value="main" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">构建目录</label>
+                            <input type="text" id="dist" value="dist" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+                <button id="submitBtn" onclick="startAutomation()" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md flex items-center justify-center">
+                    <span id="btnText">一键完成所有操作</span>
+                    <div id="btnLoader" class="hidden loader ease-linear rounded-full border-2 border-t-2 border-gray-200 h-5 w-5 ml-3"></div>
+                </button>
+            </section>
+
+            <section id="logSection" class="hidden step-card bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm">
+                <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-4">执行日志</h3>
+                <div id="logs" class="space-y-2 font-mono text-sm text-slate-300 max-h-60 overflow-y-auto"></div>
+            </section>
+        </div>
+
         <footer class="mt-16 text-center text-slate-400 text-sm">
-            <p>由 Manus 强力驱动</p>
+            <p>由 Manus 强力驱动 | 您的 Token 仅保存在浏览器本地，不会上传到任何服务器</p>
         </footer>
     </div>
 
     <script>
-        function generate() {
-            const owner = document.getElementById('owner').value.trim();
-            const repo = document.getElementById('repo').value.trim();
-            const branch = document.getElementById('branch').value.trim();
-            const dist = document.getElementById('dist').value.trim();
+        let octokit = null;
+        let currentUser = null;
+        const OFFICIAL_REPO = { owner: 'AstralSightStudios', repo: 'AstroBox-NG-Plugin-Repo' };
 
-            if (!owner || !repo || !branch || !dist) {
-                alert('请填写所有字段');
-                return;
+        window.onload = () => {
+            const savedToken = localStorage.getItem('gh_token');
+            if (savedToken) {
+                document.getElementById('githubToken').value = savedToken;
+                login();
             }
+        };
 
-            document.getElementById('localIndexContent').textContent = dist;
-            document.getElementById('remoteIndexLink').textContent = `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/${branch}/`;
-            
-            document.getElementById('results').classList.remove('hidden');
-            window.scrollTo({
-                top: document.getElementById('results').offsetTop - 20,
-                behavior: 'smooth'
-            });
+        async function login() {
+            const token = document.getElementById('githubToken').value.trim();
+            if (!token) return alert('请输入 Token');
+
+            try {
+                octokit = new window.Octokit.Octokit({ auth: token });
+                const { data: user } = await octokit.rest.users.getAuthenticated();
+                currentUser = user;
+                
+                localStorage.setItem('gh_token', token);
+                
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainSection').classList.remove('hidden');
+                document.getElementById('userName').textContent = user.login;
+                document.getElementById('userAvatar').src = user.avatar_url;
+
+                loadRepos();
+            } catch (e) {
+                alert('登录失败，请检查 Token 是否正确且具有 public_repo 权限');
+                console.error(e);
+            }
         }
 
-        function copy(id) {
-            const text = document.getElementById(id).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('已复制到剪贴板');
-            });
+        function logout() {
+            localStorage.removeItem('gh_token');
+            location.reload();
+        }
+
+        async function loadRepos() {
+            try {
+                const { data: repos } = await octokit.rest.repos.listForAuthenticatedUser({
+                    visibility: 'public',
+                    sort: 'updated',
+                    per_page: 100
+                });
+                const select = document.getElementById('repoSelect');
+                select.innerHTML = repos.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+            } catch (e) {
+                addLog('加载仓库失败', 'error');
+            }
+        }
+
+        function addLog(msg, type = 'info') {
+            const logs = document.getElementById('logs');
+            const div = document.createElement('div');
+            const colors = { info: 'text-slate-300', success: 'text-green-400', error: 'text-red-400', warning: 'text-amber-400' };
+            div.className = colors[type];
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logs.appendChild(div);
+            logs.scrollTop = logs.scrollHeight;
+            document.getElementById('logSection').classList.remove('hidden');
+        }
+
+        async function startAutomation() {
+            const repo = document.getElementById('repoSelect').value;
+            const branch = document.getElementById('branch').value;
+            const dist = document.getElementById('dist').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+
+            if (!repo) return alert('请选择仓库');
+
+            submitBtn.disabled = true;
+            btnText.textContent = '正在处理...';
+            btnLoader.classList.remove('hidden');
+            document.getElementById('logs').innerHTML = '';
+
+            try {
+                // 1. 在用户仓库创建/更新 index.txt
+                addLog(`正在为仓库 ${repo} 创建 index.txt...`);
+                let sha = null;
+                try {
+                    const { data: currentFile } = await octokit.rest.repos.getContent({
+                        owner: currentUser.login,
+                        repo: repo,
+                        path: 'index.txt',
+                        ref: branch
+                    });
+                    sha = currentFile.sha;
+                } catch (e) {}
+
+                await octokit.rest.repos.createOrUpdateFileContents({
+                    owner: currentUser.login,
+                    repo: repo,
+                    path: 'index.txt',
+                    message: 'chore: update index.txt for AstroBox',
+                    content: btoa(dist + '\n'),
+                    sha: sha,
+                    branch: branch
+                });
+                addLog('成功：插件仓库 index.txt 已更新', 'success');
+
+                // 2. Fork 官方仓库
+                addLog('正在 Fork 官方仓库...');
+                const { data: fork } = await octokit.rest.repos.createFork({
+                    owner: OFFICIAL_REPO.owner,
+                    repo: OFFICIAL_REPO.repo
+                });
+                addLog('成功：官方仓库已 Fork', 'success');
+
+                // 等待 Fork 完成
+                addLog('等待 GitHub 同步 Fork (5秒)...');
+                await new Promise(r => setTimeout(r, 5000));
+
+                // 3. 在 Fork 的仓库中更新 index.txt
+                addLog('正在修改 Fork 仓库中的 index.txt...');
+                const { data: officialIndex } = await octokit.rest.repos.getContent({
+                    owner: currentUser.login,
+                    repo: OFFICIAL_REPO.repo,
+                    path: 'index.txt'
+                });
+                
+                const currentContent = atob(officialIndex.content);
+                const rawLink = `https://raw.githubusercontent.com/${currentUser.login}/${repo}/refs/heads/${branch}/`;
+                
+                if (currentContent.includes(rawLink)) {
+                    addLog('提示：官方 index.txt 中已存在该链接，跳过修改', 'warning');
+                } else {
+                    const newContent = currentContent.trim() + '\n' + rawLink + '\n';
+                    await octokit.rest.repos.createOrUpdateFileContents({
+                        owner: currentUser.login,
+                        repo: OFFICIAL_REPO.repo,
+                        path: 'index.txt',
+                        message: `Add ${repo} plugin`,
+                        content: btoa(newContent),
+                        sha: officialIndex.sha
+                    });
+                    addLog('成功：Fork 仓库的 index.txt 已修改', 'success');
+                }
+
+                // 4. 提交 PR
+                addLog('正在提交 Pull Request 到官方仓库...');
+                try {
+                    const { data: pr } = await octokit.rest.pulls.create({
+                        owner: OFFICIAL_REPO.owner,
+                        repo: OFFICIAL_REPO.repo,
+                        title: `Add ${repo} plugin`,
+                        head: `${currentUser.login}:main`, // 假设 fork 默认分支是 main
+                        base: 'main',
+                        body: `此 PR 由 AstroBox 插件上传辅助工具自动生成。\n插件仓库: https://github.com/${currentUser.login}/${repo}`
+                    });
+                    addLog(`大功告成！PR 已创建: ${pr.html_url}`, 'success');
+                    window.open(pr.html_url, '_blank');
+                } catch (e) {
+                    if (e.message.includes('A pull request already exists')) {
+                        addLog('提示：PR 已经存在，无需重复创建', 'warning');
+                    } else {
+                        throw e;
+                    }
+                }
+
+            } catch (e) {
+                addLog(`错误: ${e.message}`, 'error');
+                console.error(e);
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = '一键完成所有操作';
+                btnLoader.classList.add('hidden');
+            }
         }
     </script>
 </body>
