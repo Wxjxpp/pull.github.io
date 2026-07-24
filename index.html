@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroBox 插件上传辅助工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+    <div class="max-w-3xl mx-auto px-4 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-4">AstroBox 插件上传辅助</h1>
+            <p class="text-lg text-slate-600">简化插件上架流程，一键生成所需配置</p>
+        </header>
+
+        <div class="space-y-8">
+            <!-- Step 1: Repository Info -->
+            <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center mb-6">
+                    <span class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</span>
+                    <h2 class="text-xl font-bold">填写仓库信息</h2>
+                </div>
+                <div class="grid gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">GitHub 用户名</label>
+                        <input type="text" id="owner" placeholder="例如: Wxjxpp" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">插件仓库名</label>
+                        <input type="text" id="repo" placeholder="例如: my-awesome-plugin" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">默认分支</label>
+                        <input type="text" id="branch" value="main" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">构建产物目录</label>
+                        <input type="text" id="dist" value="dist" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                </div>
+                <button onclick="generate()" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-md">生成配置内容</button>
+            </section>
+
+            <!-- Results Section -->
+            <div id="results" class="hidden space-y-8">
+                <!-- Step 2: Local Files -->
+                <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center mb-6">
+                        <span class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</span>
+                        <h2 class="text-xl font-bold">在插件仓库根目录创建 index.txt</h2>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">请在您的插件仓库根目录下创建一个名为 <code>index.txt</code> 的文件，内容如下：</p>
+                    <div class="relative group">
+                        <pre id="localIndexContent" class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto font-mono text-sm"></pre>
+                        <button onclick="copy('localIndexContent')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-xs text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">复制</button>
+                    </div>
+                </section>
+
+                <!-- Step 3: PR Link -->
+                <section class="step-card bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center mb-6">
+                        <span class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</span>
+                        <h2 class="text-xl font-bold">向官方仓库提交 PR</h2>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">
+                        前往 <a href="https://github.com/AstralSightStudios/AstroBox-NG-Plugin-Repo" target="_blank" class="text-blue-600 hover:underline">AstroBox-NG-Plugin-Repo</a> 
+                        修改其根目录下的 <code>index.txt</code>，在末尾追加以下链接：
+                    </p>
+                    <div class="relative group mb-6">
+                        <pre id="remoteIndexLink" class="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto font-mono text-sm"></pre>
+                        <button onclick="copy('remoteIndexLink')" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-xs text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">复制</button>
+                    </div>
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-amber-700 font-medium">提示：请确保您的仓库是公开的，且文件已推送到 GitHub。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <footer class="mt-16 text-center text-slate-400 text-sm">
+            <p>由 Manus 强力驱动</p>
+        </footer>
+    </div>
+
+    <script>
+        function generate() {
+            const owner = document.getElementById('owner').value.trim();
+            const repo = document.getElementById('repo').value.trim();
+            const branch = document.getElementById('branch').value.trim();
+            const dist = document.getElementById('dist').value.trim();
+
+            if (!owner || !repo || !branch || !dist) {
+                alert('请填写所有字段');
+                return;
+            }
+
+            document.getElementById('localIndexContent').textContent = dist;
+            document.getElementById('remoteIndexLink').textContent = `https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/${branch}/`;
+            
+            document.getElementById('results').classList.remove('hidden');
+            window.scrollTo({
+                top: document.getElementById('results').offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
+
+        function copy(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制到剪贴板');
+            });
+        }
+    </script>
+</body>
+</html>
