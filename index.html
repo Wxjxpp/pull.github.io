@@ -101,13 +101,24 @@
         let currentCategory = 'all';
         let allLoadedFiles = [];
         let driverMeta = {};
+        const CDN_BASE = 'https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main';
+
+        function getCDNUrl(file) {
+            return `${CDN_BASE}/${BASE_PATH}/${file.category}/${encodeURIComponent(file.name)}`;
+        }
+
+        function b64DecodeUTF8(str) {
+            const binary = atob(str);
+            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+            return new TextDecoder('utf-8').decode(bytes);
+        }
 
         async function loadDriverMeta() {
             try {
                 const resp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${BASE_PATH}/drivers.json`);
                 if (resp.ok) {
                     const data = await resp.json();
-                    driverMeta = JSON.parse(atob(data.content));
+                    driverMeta = JSON.parse(b64DecodeUTF8(data.content));
                 }
             } catch (e) {
                 console.warn('无法加载驱动元数据:', e);
@@ -229,7 +240,7 @@
                                 </div>
                             </div>
                             <div class="flex-shrink-0 flex flex-col items-end gap-1 ml-3">
-                                <a href="${file.download_url}" 
+                                <a href="${getCDNUrl(file)}" 
                                    download="${file.name}"
                                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm">
                                     <i class="fas fa-download mr-2"></i> 下载
