@@ -498,6 +498,10 @@
                 <p class="mt-1 text-sm" style="color: var(--text-dim);">Vulkan 驱动下载 · 适配查询 · 持续更新</p>
             </div>
             <div class="flex items-center gap-2">
+                <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank"
+                   class="theme-toggle" title="GitHub 源码">
+                    <i class="fab fa-github"></i>
+                </a>
                 <button class="hamburger" onclick="toggleDrawer()" title="设置">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -760,7 +764,6 @@
         let capsOpen = true;
         const CAPS_CACHE_KEY = 'vulkancaps_history';
         const CAPS_URL = 'https://vulkan.gpuinfo.org/download.php';
-        const CORS_PROXY = 'https://corsproxy.io/?';
 
         function getCapsHistory() {
             try { return JSON.parse(localStorage.getItem(CAPS_CACHE_KEY)) || []; }
@@ -771,52 +774,27 @@
             catch {}
         }
 
-        async function fetchCapsViewer() {
-            const body = document.getElementById('capsBody');
+        function fetchCapsViewer() {
+            const history = getCapsHistory();
             const versionEl = document.getElementById('capsVersion');
-            let history = getCapsHistory();
 
-            try {
-                const resp = await fetch(CORS_PROXY + encodeURIComponent(CAPS_URL));
-                const html = await resp.text();
-
-                // Parse Android APK link
-                const apkMatch = html.match(/href="([^"]*vulkancapsviewer[^"]*arm\.apk)"/i);
-                const versionMatch = html.match(/Current release\s+([\d.]+)/i) || html.match(/Release (\d+\.\d+)/i);
-                const dateMatch = html.match(/(\d{4}-\d{2}-\d{2})/);
-
-                const version = versionMatch ? versionMatch[1] : '';
-                const apkUrl = apkMatch ? apkMatch[1] : '';
-                const date = dateMatch ? dateMatch[1] : '';
-                const timestamp = new Date().toISOString();
-
-                const newEntry = { version, apkUrl, date, timestamp, source: 'fetched' };
-
-                // Deduplicate: only add if version changed
-                const existing = history.find(h => h.version === version);
-                if (!existing && version && apkUrl) {
-                    history.unshift(newEntry);
-                    // Keep max 20 entries
-                    if (history.length > 20) history = history.slice(0, 20);
-                    saveCapsHistory(history);
-                }
-
-                versionEl.textContent = version ? 'v' + version : 'v4.12';
-                renderCapsViewer(history);
-            } catch (e) {
-                // Fallback: use embedded data
-                if (history.length === 0) {
-                    history = [{
-                        version: '4.12',
-                        apkUrl: 'https://vulkan.gpuinfo.org/downloads/vulkancapsviewer_4.12_arm.apk',
-                        date: '2026-07-31',
-                        timestamp: new Date().toISOString(),
-                        source: 'fallback'
-                    }];
-                }
-                versionEl.textContent = history.length ? 'v' + history[0].version : 'v4.12';
-                renderCapsViewer(history);
+            // Use default data if no history
+            if (!history.length) {
+                const defaults = [{
+                    version: '4.12',
+                    apkUrl: 'https://vulkan.gpuinfo.org/downloads/vulkancapsviewer_4.12_arm.apk',
+                    date: '',
+                    timestamp: new Date().toISOString(),
+                    source: 'default'
+                }];
+                saveCapsHistory(defaults);
+                versionEl.textContent = 'v4.12';
+                renderCapsViewer(defaults);
+                return;
             }
+
+            versionEl.textContent = history.length ? 'v' + history[0].version : 'v4.12';
+            renderCapsViewer(history);
         }
 
         function renderCapsViewer(history) {
@@ -842,14 +820,14 @@
                             <a href="${latest.apkUrl}" target="_blank" class="dl-btn">
                                 <i class="fas fa-download"></i> Android APK (arm64)
                             </a>
+                            <a href="https://vulkan.gpuinfo.org/download.php" target="_blank" class="dl-btn-sm">
+                                <i class="fas fa-external-link-alt"></i> 官方下载页
+                            </a>
                             <a href="https://play.google.com/store/apps/details?id=de.saschawillems.vulkancapsviewer" target="_blank" class="dl-btn-sm">
                                 <i class="fab fa-google-play"></i> Google Play
                             </a>
                         </div>
                     </div>
-                    <button onclick="refreshCapsViewer()" class="dl-btn-sm" title="刷新检查">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
                 </div>`;
 
             if (hasOld) {
@@ -878,12 +856,6 @@
             }
 
             body.innerHTML = html;
-        }
-
-        function refreshCapsViewer() {
-            const body = document.getElementById('capsBody');
-            body.innerHTML = `<div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);"><i class="fas fa-spinner fa-pulse"></i> 检查更新中...</div>`;
-            fetchCapsViewer();
         }
 
         let capsHistOpen = false;
