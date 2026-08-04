@@ -8,184 +8,332 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        :root {
-            --bg: #0a0e14;
-            --surface: #131820;
-            --surface2: #1a1f2e;
-            --border: #252b38;
-            --text: #b6c2d9;
-            --text-dim: #5c6a82;
-            --accent: #00e5ff;
-            --accent2: #00b8d4;
-            --green: #00e676;
-            --amber: #ffab00;
-            --red: #ff5252;
-            --purple: #b388ff;
+        /* ============ Light theme (default) ============ */
+        :root, [data-theme="light"] {
+            --bg: #f6f7fb;
+            --surface: #ffffff;
+            --surface2: #f0f2f7;
+            --border: #e2e6ef;
+            --text: #1f2937;
+            --text-dim: #6b7280;
+            --accent: #6366f1;
+            --accent2: #818cf8;
+            --accent-soft: rgba(99,102,241,0.08);
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(17,24,39,0.06);
         }
+
+        /* ============ Dark theme ============ */
+        [data-theme="dark"] {
+            --bg: #0f1220;
+            --surface: #181c2e;
+            --surface2: #202640;
+            --border: #2b3250;
+            --text: #e2e8f0;
+            --text-dim: #8892b0;
+            --accent: #818cf8;
+            --accent2: #a5b4fc;
+            --accent-soft: rgba(129,140,248,0.12);
+            --green: #34d399;
+            --amber: #fbbf24;
+            --red: #f87171;
+            --purple: #c4b5fd;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
         * { box-sizing: border-box; }
+        html, body { transition: background 0.3s ease, color 0.3s ease; }
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.65;
+            letter-spacing: 0.01em;
         }
-        /* Background grid pattern */
+
+        /* Soft ambient gradient */
         body::before {
             content: '';
             position: fixed;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
+            top: -20%; left: -10%;
+            width: 60%; height: 50%;
+            background: radial-gradient(circle at 30% 40%, var(--accent-soft) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
         }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%; right: -10%;
+            width: 55%; height: 45%;
+            background: radial-gradient(circle at 70% 60%, rgba(139,92,246,0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        [data-theme="dark"] body::after { background: radial-gradient(circle at 70% 60%, rgba(196,181,253,0.08) 0%, transparent 60%); }
+
         .content { position: relative; z-index: 1; }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-        /* Glow accent */
-        .glow-text { text-shadow: 0 0 20px rgba(0,229,255,0.3); }
-        .glow-border { box-shadow: 0 0 0 1px var(--border), 0 0 20px rgba(0,229,255,0.05); }
+        /* Theme toggle */
+        .theme-toggle {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+        .theme-toggle:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        /* Accent text */
+        .title-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Panel style */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .panel:hover { box-shadow: var(--shadow-md); }
 
         /* Collapsible */
-        .collapse-toggle { cursor: pointer; user-select: none; transition: all 0.2s; }
-        .collapse-toggle:hover { color: var(--accent); }
-        .collapse-content { overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; }
+        .collapse-toggle {
+            cursor: pointer; user-select: none;
+            transition: all 0.2s;
+            border-radius: 12px 12px 0 0;
+        }
+        .collapse-toggle:hover { background: var(--surface2); }
+        .collapse-content {
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+        }
         .collapse-content.collapsed { max-height: 0 !important; opacity: 0; }
-        .collapse-icon { transition: transform 0.3s ease; display: inline-block; }
+        .collapse-icon { transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: inline-block; }
         .collapse-icon.rotated { transform: rotate(180deg); }
 
         /* File card */
         .file-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            transition: all 0.2s ease;
+            border-radius: 14px;
+            transition: all 0.22s ease;
+            box-shadow: var(--shadow-sm);
         }
         .file-card:hover {
             border-color: var(--accent2);
-            box-shadow: 0 0 20px rgba(0,229,255,0.06);
+            box-shadow: var(--shadow-md);
             transform: translateY(-1px);
         }
 
         /* Category button */
         .cat-btn {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 7px 13px;
+            border-radius: 10px;
+            font-size: 12.5px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.22s ease;
             border: 1px solid var(--border);
             background: var(--surface);
             color: var(--text-dim);
             white-space: nowrap;
         }
-        .cat-btn:hover { border-color: var(--accent2); color: var(--text); }
-        .cat-btn.active {
-            background: var(--accent2);
-            border-color: var(--accent2);
-            color: #000;
-            font-weight: 600;
+        .cat-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
         }
-        .cat-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .cat-btn.active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            border-color: transparent;
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px var(--accent-soft);
+        }
+        .cat-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
         /* Search */
         .search-input {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--text);
-            padding: 10px 16px 10px 44px;
+            padding: 11px 18px 11px 46px;
             width: 100%;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
         .search-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+            box-shadow: 0 0 0 4px var(--accent-soft);
         }
         .search-input::placeholder { color: var(--text-dim); }
 
         /* Markdown content */
         .markdown-body { color: var(--text); font-size: 14px; line-height: 1.8; }
-        .markdown-body h1 { font-size: 1.5em; color: var(--accent); margin: 0 0 0.5em; font-weight: 700; }
-        .markdown-body h2 { font-size: 1.2em; color: var(--text); margin: 1.2em 0 0.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
-        .markdown-body h3 { font-size: 1em; color: var(--accent2); margin: 1em 0 0.4em; }
+        .markdown-body h1 {
+            font-size: 1.5em;
+            margin: 0 0 0.5em; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .markdown-body h2 {
+            font-size: 1.15em; color: var(--text);
+            margin: 1.2em 0 0.5em; padding-bottom: 0.4em;
+            border-bottom: 1px solid var(--border);
+            font-weight: 650;
+        }
+        .markdown-body h3 { font-size: 1em; color: var(--accent); margin: 1em 0 0.4em; font-weight: 600; }
         .markdown-body p { margin: 0 0 0.8em; }
         .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin: 0 0 0.8em; }
         .markdown-body li { margin: 0.2em 0; }
-        .markdown-body code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: var(--accent); }
-        .markdown-body pre { background: var(--surface2); padding: 12px 16px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); }
+        .markdown-body code {
+            background: var(--surface2); padding: 2px 6px;
+            border-radius: 5px; font-size: 0.88em;
+            color: var(--accent); font-family: 'SF Mono', ui-monospace, Consolas, monospace;
+        }
+        .markdown-body pre {
+            background: var(--surface2); padding: 14px 18px;
+            border-radius: 10px; overflow-x: auto;
+            border: 1px solid var(--border);
+        }
         .markdown-body pre code { background: none; padding: 0; color: var(--text); }
-        .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.8em 0; font-size: 13px; }
-        .markdown-body th { background: var(--surface2); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); color: var(--accent); font-weight: 600; }
-        .markdown-body td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
-        .markdown-body a { color: var(--accent); text-decoration: none; }
-        .markdown-body a:hover { text-decoration: underline; }
-        .markdown-body blockquote { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 0.5em 1em; background: var(--surface2); border-radius: 0 8px 8px 0; color: var(--text-dim); }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.8em 0; font-size: 13.5px; }
+        .markdown-body th {
+            background: var(--surface2); padding: 9px 14px;
+            text-align: left; border-bottom: 1px solid var(--border);
+            color: var(--accent); font-weight: 600;
+        }
+        .markdown-body td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+        .markdown-body a {
+            color: var(--accent); text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .markdown-body a:hover { border-bottom-color: var(--accent); }
+        .markdown-body blockquote {
+            border-left: 3px solid var(--accent2); margin: 0.8em 0;
+            padding: 0.6em 1.1em; background: var(--surface2);
+            border-radius: 0 10px 10px 0; color: var(--text-dim);
+        }
 
         /* Version history */
         .version-item {
             border-left: 2px solid var(--border);
-            padding: 8px 16px;
-            margin-left: 8px;
+            padding: 10px 16px;
+            margin-left: 10px;
             transition: all 0.2s;
+            border-radius: 0 8px 8px 0;
         }
-        .version-item:hover { border-left-color: var(--accent2); background: var(--surface2); }
+        .version-item:hover {
+            border-left-color: var(--accent);
+            background: var(--surface2);
+        }
 
         /* Download button */
         .dl-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 18px; border-radius: 8px;
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 20px; border-radius: 10px;
             font-size: 13px; font-weight: 600;
-            background: var(--accent2); color: #000;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            color: #fff;
             border: none; cursor: pointer;
-            transition: all 0.2s; text-decoration: none;
+            transition: all 0.22s ease; text-decoration: none;
+            box-shadow: 0 2px 8px var(--accent-soft);
         }
-        .dl-btn:hover { background: var(--accent); box-shadow: 0 0 16px rgba(0,229,255,0.2); }
+        .dl-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px var(--accent-soft);
+            filter: brightness(1.08);
+        }
         .dl-btn-sm {
-            padding: 5px 12px; font-size: 12px;
+            padding: 6px 13px; font-size: 12.5px;
             background: var(--surface2); color: var(--text);
-            border: 1px solid var(--border); border-radius: 6px;
+            border: 1px solid var(--border); border-radius: 8px;
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 5px;
+            transition: all 0.2s ease;
         }
-        .dl-btn-sm:hover { border-color: var(--accent2); color: var(--accent); }
+        .dl-btn-sm:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
 
-        .badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+        .badge {
+            font-size: 11px; padding: 3px 9px;
+            border-radius: 7px; font-weight: 600;
+        }
+
+        /* File icon circle */
+        .icon-pill {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-soft);
+            color: var(--accent);
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
     <div class="content max-w-4xl mx-auto px-4 py-8">
         <!-- Header -->
-        <header class="flex items-center justify-between mb-8 pb-6 border-b" style="border-color: var(--border);">
+        <header class="flex items-center justify-between mb-8 pb-6" style="border-bottom: 1px solid var(--border);">
             <div>
-                <h1 class="text-2xl font-bold glow-text flex items-center gap-3" style="color: var(--accent);">
+                <h1 class="text-2xl font-bold flex items-center gap-3 title-accent">
                     <i class="fas fa-microchip"></i>
                     Vulkans 下载站
                 </h1>
                 <p class="mt-1 text-sm" style="color: var(--text-dim);">Vulkan 驱动下载 · 适配查询 · 持续更新</p>
             </div>
-            <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank"
-               class="text-sm flex items-center gap-1.5 transition-colors"
-               style="color: var(--text-dim);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">
-                <i class="fab fa-github"></i> 源码
-            </a>
+            <div class="flex items-center gap-2">
+                <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </button>
+                <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank"
+                   class="theme-toggle" title="源码">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
         </header>
 
         <!-- README Section -->
-        <div class="mb-6 rounded-xl glow-border" style="background: var(--surface);">
-            <div class="collapse-toggle flex items-center justify-between px-5 py-3.5" onclick="toggleReadme()">
+        <div class="mb-6 panel">
+            <div class="collapse-toggle flex items-center justify-between px-5 py-4" onclick="toggleReadme()">
                 <div class="flex items-center gap-2.5">
                     <i class="fas fa-book-open" style="color: var(--accent);"></i>
                     <span class="font-semibold text-sm">仓库说明</span>
-                    <span class="text-xs px-2 py-0.5 rounded" style="background: var(--surface2); color: var(--text-dim);">README</span>
+                    <span class="badge" style="background: var(--surface2); color: var(--text-dim);">README</span>
                 </div>
                 <i class="fas fa-chevron-down collapse-icon text-sm" id="readmeIcon" style="color: var(--text-dim);"></i>
             </div>
@@ -199,12 +347,12 @@
         </div>
 
         <!-- VulkanCapsViewer Section -->
-        <div class="mb-6 rounded-xl glow-border" style="background: var(--surface);">
-            <div class="collapse-toggle flex items-center justify-between px-5 py-3.5" onclick="toggleCapsViewer()">
+        <div class="mb-6 panel">
+            <div class="collapse-toggle flex items-center justify-between px-5 py-4" onclick="toggleCapsViewer()">
                 <div class="flex items-center gap-2.5">
                     <i class="fas fa-flask" style="color: var(--green);"></i>
                     <span class="font-semibold text-sm">VulkanCapsViewer 下载</span>
-                    <span class="text-xs px-2 py-0.5 rounded" style="background: var(--surface2); color: var(--text-dim);">官方工具</span>
+                    <span class="badge" style="background: var(--surface2); color: var(--text-dim);">官方工具</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs" id="capsVersion" style="color: var(--text-dim);">v4.12</span>
@@ -235,15 +383,15 @@
         </div>
 
         <!-- File List -->
-        <div class="rounded-xl overflow-hidden glow-border" style="background: var(--surface);">
-            <div class="px-5 py-3.5 flex items-center justify-between border-b" style="border-color: var(--border);">
+        <div class="panel overflow-hidden">
+            <div class="px-5 py-4 flex items-center justify-between" style="border-bottom: 1px solid var(--border);">
                 <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-dim);">
                     <i class="fas fa-folder-open" style="color: var(--amber);"></i>
                     <span id="breadcrumb">/vulkans</span>
                 </div>
                 <div id="fileCount" class="text-xs uppercase tracking-wider" style="color: var(--text-dim);">加载中...</div>
             </div>
-            <div id="fileList" class="divide-y" style="border-color: var(--border);"></div>
+            <div id="fileList" class="p-3 sm:p-4 space-y-2"></div>
         </div>
 
         <footer class="mt-10 text-center text-xs" style="color: var(--text-dim);">
@@ -674,14 +822,13 @@
                 let metaHtml = '';
                 if (m) {
                     metaHtml = `
-                        <div class="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs">
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded whitespace-nowrap"
-                                style="background: rgba(0,229,255,0.08); color: var(--accent);">
+                        <div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md whitespace-nowrap"
+                                style="background: var(--accent-soft); color: var(--accent);">
                                 <i class="fas fa-microchip text-[10px]"></i> ${m.gpuGen}
                             </span>
-                            <span style="color: var(--text-dim);">|</span>
-                            <span class="break-all" style="color: var(--text-dim);" title="${m.devices}">
-                                <i class="fas fa-mobile-alt mr-0.5"></i>${m.devices}
+                            <span class="inline-flex items-center gap-1 break-all" style="color: var(--text-dim);" title="${m.devices}">
+                                <i class="fas fa-mobile-alt"></i>${m.devices}
                             </span>
                         </div>
                         <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
@@ -691,12 +838,11 @@
                 }
 
                 return `
-                    <div class="file-card p-4 sm:px-5">
+                    <div class="file-card p-4 sm:p-5">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start min-w-0 flex-1">
-                                <div class="w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center mr-3 mt-0.5"
-                                    style="background: var(--surface2);">
-                                    <i class="${icon} text-lg"></i>
+                                <div class="icon-pill mr-4 mt-0.5">
+                                    <i class="${icon}"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <h3 class="text-sm font-semibold truncate" style="color: var(--text);" title="${f.name}">
@@ -749,8 +895,32 @@
             return icons[ext] || 'fas fa-file';
         }
 
+        // ============ Theme ============
+        const THEME_KEY = 'vulkans_theme';
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        function initTheme() {
+            let theme = 'light';
+            try {
+                const saved = localStorage.getItem(THEME_KEY);
+                if (saved) theme = saved;
+                else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+            } catch {}
+            applyTheme(theme);
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            try { localStorage.setItem(THEME_KEY, next); } catch {}
+        }
+
         // ============ Init ============
         window.onload = () => {
+            initTheme();
             loadReadme();
             fetchCapsViewer();
             renderCategoryNav();
