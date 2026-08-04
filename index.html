@@ -166,20 +166,6 @@
       }
     },
     {
-      "name": "libvulkan_panfrost.so",
-      "size": 102798568,
-      "sizeHuman": "98.0 MB",
-      "meta": {
-        "name": "libvulkan_panfrost.so",
-        "version": "Mesa 26.2.0-devel",
-        "arch": "ARM aarch64",
-        "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G710, G610, G720, G725, T600-T880",
-        "gpuGen": "Midgard / Bifrost / Valhall / G1",
-        "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1/G2/G3/G4, Exynos 2200/2400 等",
-        "note": "最新开发版，支持 Mali G1 系列旗舰 GPU"
-      }
-    },
-    {
       "name": "libvulkan_panfrost_26.1.6-r0.so",
       "size": 15113960,
       "sizeHuman": "14.4 MB",
@@ -207,6 +193,22 @@
         "note": "开发版，支持 Mali G1 系列"
       }
     }
+  ],
+  "待验证": [
+    {
+      "name": "libvulkan_panfrost.so",
+      "size": 102798568,
+      "sizeHuman": "98.0 MB",
+      "meta": {
+        "name": "libvulkan_panfrost.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G710, G610, G720, G725, T600-T880",
+        "gpuGen": "Midgard / Bifrost / Valhall / G1",
+        "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1/G2/G3/G4, Exynos 2200/2400 等",
+        "note": "待验证，支持 Mali G1 系列旗舰 GPU"
+      }
+    }
   ]
 };
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
@@ -215,13 +217,14 @@
 
         const CATEGORIES = {
             'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
-            'snapdragon': { name: 'Snapdragon', icon: 'fa-microchip', color: 'bg-red-500' },
-            'mediatek': { name: 'MediaTek', icon: 'fa-microchip', color: 'bg-blue-500' },
-            'exynos': { name: 'Exynos', icon: 'fa-microchip', color: 'bg-purple-500' },
-            'tensor': { name: 'Tensor', icon: 'fa-microchip', color: 'bg-green-500' },
+            'snapdragon': { name: 'Adreno', icon: 'fa-microchip', color: 'bg-red-500' },
+            'mediatek': { name: 'Mali', icon: 'fa-microchip', color: 'bg-blue-500' },
+            'exynos': { name: 'Xclipse', icon: 'fa-microchip', color: 'bg-purple-500' },
+            'tensor': { name: 'Mali', icon: 'fa-microchip', color: 'bg-green-500' },
             'mali': { name: 'Mali', icon: 'fa-microchip', color: 'bg-orange-500' },
             'powervr': { name: 'PowerVR', icon: 'fa-microchip', color: 'bg-yellow-600' },
-            'other': { name: '其他', icon: 'fa-ellipsis-h', color: 'bg-gray-500' }
+            'other': { name: '其他', icon: 'fa-ellipsis-h', color: 'bg-gray-500' },
+            '待验证': { name: '待验证', icon: 'fa-hourglass-half', color: 'bg-amber-500' }
         };
 
         let currentCategory = 'all';
