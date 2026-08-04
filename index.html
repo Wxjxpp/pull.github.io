@@ -77,7 +77,139 @@
     </div>
 
     <script>
-        /* AUTO_GENERATED_DATA */
+        const EMBEDDED_FILES = {
+  "snapdragon": [
+    {
+      "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
+      "size": 14343704,
+      "sizeHuman": "13.7 MB",
+      "meta": {
+        "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
+        "version": "Mesa 26.3.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Adreno 623, 704, 810, 829, 830, 840, X1-45, X1-85, X2-85, X2-90",
+        "gpuGen": "Adreno 6xx / 7xx / 8xx",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, 7 Gen 3, X Elite 等",
+        "note": "最新测试版，重点优化 Adreno 710/720"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno.so",
+      "size": 10393544,
+      "sizeHuman": "9.9 MB",
+      "meta": {
+        "name": "libvulkan_freedreno.so",
+        "version": "Mesa 24.3.2",
+        "arch": "ARM aarch64",
+        "gpu": "Adreno 618, 630",
+        "gpuGen": "Adreno 6xx / 7xx",
+        "devices": "骁龙 865/870/888/8 Gen 1 等",
+        "note": "稳定版，覆盖较旧型号"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno_25.0.1.so",
+      "size": 11748520,
+      "sizeHuman": "11.2 MB",
+      "meta": {
+        "name": "libvulkan_freedreno_25.0.1.so",
+        "version": "Mesa 25.0.1",
+        "arch": "ARM aarch64",
+        "gpu": "Adreno 618, 630",
+        "gpuGen": "Adreno 6xx / 7xx",
+        "devices": "骁龙 865/870/888/8 Gen 1/8+ Gen 1 等",
+        "note": "Mesa 25 稳定版"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno_26.2.0(1).so",
+      "size": 18606849,
+      "sizeHuman": "17.7 MB",
+      "meta": {
+        "name": "libvulkan_freedreno_26.2.0(1).so",
+        "version": "PurpleVK 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Adreno 618, 623, 630, 810, 825, 829, 830, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx / 8xx",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 8s Gen 3, 7+ Gen 3, 7 Gen 3, X Elite 等",
+        "note": "PurpleVK 公开版，支持 Adreno 8xx"
+      }
+    },
+    {
+      "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
+      "size": 17159433,
+      "sizeHuman": "16.4 MB",
+      "meta": {
+        "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
+        "version": "Mesa 26.0.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Adreno 618, 623, 630, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx / 8xx",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, 7 Gen 3, X Elite 等",
+        "note": "支持 a6xx-a7xx，含 FD830"
+      }
+    }
+  ],
+  "mali": [
+    {
+      "name": "libvulkan_panfrost(1).so",
+      "size": 12560168,
+      "sizeHuman": "12.0 MB",
+      "meta": {
+        "name": "libvulkan_panfrost(1).so",
+        "version": "Mesa 25.2.8 (Ubuntu)",
+        "arch": "ARM aarch64",
+        "gpu": "Mali-G31, G310, G51, G52, G57, G71, G72, G76, G610, G720, G725, T600-T880",
+        "gpuGen": "Midgard / Bifrost / Valhall",
+        "devices": "麒麟 810/820/980/990, 天玑 700/720/800/900/1100/1200, 虎贲 T618/T610, Exynos 980/1080/1280 等",
+        "note": "Ubuntu 源内版本，覆盖 Midgard/Valhall"
+      }
+    },
+    {
+      "name": "libvulkan_panfrost.so",
+      "size": 102798568,
+      "sizeHuman": "98.0 MB",
+      "meta": {
+        "name": "libvulkan_panfrost.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G710, G610, G720, G725, T600-T880",
+        "gpuGen": "Midgard / Bifrost / Valhall / G1",
+        "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1/G2/G3/G4, Exynos 2200/2400 等",
+        "note": "最新开发版，支持 Mali G1 系列旗舰 GPU"
+      }
+    },
+    {
+      "name": "libvulkan_panfrost_26.1.6-r0.so",
+      "size": 15113960,
+      "sizeHuman": "14.4 MB",
+      "meta": {
+        "name": "libvulkan_panfrost_26.1.6-r0.so",
+        "version": "Mesa 26.1.6",
+        "arch": "ARM aarch64",
+        "gpu": "Mali-G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G610, G720, G725, T600-T880",
+        "gpuGen": "Midgard / Bifrost / Valhall",
+        "devices": "麒麟 810/820/980/990, 天玑 700-1200, Tensor G1/G2, Exynos 980-1280 等",
+        "note": "Mesa 26.1 稳定版"
+      }
+    },
+    {
+      "name": "libvulkan_panfrost_unknown_1.so",
+      "size": 17884096,
+      "sizeHuman": "17.1 MB",
+      "meta": {
+        "name": "libvulkan_panfrost_unknown_1.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G610, G720, G725, T600-T880",
+        "gpuGen": "Midgard / Bifrost / Valhall / G1",
+        "devices": "麒麟 9000+, 天玑 9000+, Tensor G3/G4, Exynos 2200+ 等",
+        "note": "开发版，支持 Mali G1 系列"
+      }
+    }
+  ]
+};
+        const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
 
         const CATEGORIES = {
             'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
