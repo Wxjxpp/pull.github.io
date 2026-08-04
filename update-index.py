@@ -9,7 +9,7 @@ CDN_BASE = 'https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main'
 RAW_BASE = 'https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main'
 LARGE_FILE_THRESHOLD = 50 * 1024 * 1024  # 50MB，超过此大小用 raw GitHub
 
-CATEGORIES = ['snapdragon', 'mediatek', 'exynos', 'tensor', 'mali', 'powervr', 'other', '待验证']
+CATEGORIES = ['snapdragon', 'mediatek', 'exynos', 'tensor', 'mali', 'powervr', 'xuanjie', 'other', '待验证']
 
 
 def format_bytes(size):
