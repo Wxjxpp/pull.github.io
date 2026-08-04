@@ -5,9 +5,9 @@
       "version": "Mesa 26.3.0-devel",
       "arch": "ARM aarch64",
       "source": "https://github.com/The412Banner/Banners-Turnip",
-      "gpu": "Adreno 710, 720",
-      "gpuGen": "Adreno 7xx (710/720 补丁版)",
-      "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720 的设备",
+      "gpu": "Adreno 710, 720，722",
+      "gpuGen": "Adreno 7xx",
+      "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720/722 的设备",
       "note": "Banners-Turnip 构建，含 710/720 专项补丁，2026-08-01 版本"
     },
     {
