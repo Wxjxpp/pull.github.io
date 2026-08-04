@@ -44,6 +44,20 @@
             </div>
         </div>
 
+        <!-- 搜索框 -->
+        <div class="mb-4">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="搜索 GPU 型号、设备名称或文件名...（如 Adreno 740、天玑 9300、骁龙 8 Gen 3）"
+                    class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                    oninput="applyFilter()"
+                />
+            </div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center text-sm font-medium text-gray-600">
@@ -85,6 +99,21 @@
         };
 
         let currentCategory = 'all';
+        let allLoadedFiles = [];
+        let driverMeta = {};
+
+        async function loadDriverMeta() {
+            try {
+                const resp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${BASE_PATH}/drivers.json`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    driverMeta = JSON.parse(atob(data.content));
+                }
+            } catch (e) {
+                console.warn('无法加载驱动元数据:', e);
+                driverMeta = {};
+            }
+        }
 
         function renderCategoryNav() {
             const nav = document.getElementById('categoryNav');
@@ -108,16 +137,122 @@
             fetchFiles();
         }
 
+        function applyFilter() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            renderFileList(allLoadedFiles, query);
+        }
+
+        function getMetaInfo(file) {
+            const catMeta = driverMeta[file.category] || [];
+            return catMeta.find(m => m.name === file.name) || null;
+        }
+
+        function renderFileList(files, searchQuery) {
+            const fileListContainer = document.getElementById('fileList');
+            const fileCountBadge = document.getElementById('fileCount');
+
+            let filtered = files;
+            if (searchQuery) {
+                filtered = files.filter(file => {
+                    const meta = getMetaInfo(file);
+                    const searchText = [
+                        file.name,
+                        meta ? meta.gpu : '',
+                        meta ? meta.devices : '',
+                        meta ? meta.gpuGen : '',
+                        meta ? meta.version : '',
+                        meta ? meta.note : '',
+                        file.category
+                    ].join(' ').toLowerCase();
+                    return searchText.includes(searchQuery);
+                });
+            }
+
+            if (filtered.length === 0) {
+                fileListContainer.innerHTML = `
+                    <div class="p-12 text-center">
+                        <i class="fas fa-inbox text-4xl text-gray-200 mb-4"></i>
+                        ${searchQuery 
+                            ? '<p class="text-gray-400">没有匹配「<span class="font-medium text-gray-600">' + escapeHtml(searchQuery) + '</span>」的结果</p>'
+                            : '<p class="text-gray-400">该分类下暂无文件</p>'}
+                    </div>
+                `;
+                fileCountBadge.textContent = searchQuery ? '无匹配结果' : '0 个文件';
+                return;
+            }
+
+            fileCountBadge.textContent = searchQuery 
+                ? `找到 ${filtered.length} 个匹配` 
+                : `${filtered.length} 个文件`;
+
+            fileListContainer.innerHTML = filtered.map(file => {
+                const size = formatBytes(file.size);
+                const extension = file.name.split('.').pop().toLowerCase();
+                const icon = getFileIcon(extension);
+                const meta = getMetaInfo(file);
+                const catLabel = currentCategory === 'all' 
+                    ? `<span class="text-xs px-2 py-0.5 rounded-full ${CATEGORIES[file.category].color} text-white ml-2">${CATEGORIES[file.category].name}</span>`
+                    : '';
+
+                let metaHtml = '';
+                if (meta) {
+                    metaHtml = `
+                        <div class="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs">
+                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded">
+                                <i class="fas fa-microchip text-[10px]"></i> ${meta.gpuGen}
+                            </span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-gray-500" title="${meta.devices}">
+                                <i class="fas fa-mobile-alt mr-0.5"></i>${meta.devices.length > 40 ? meta.devices.substring(0, 40) + '...' : meta.devices}
+                            </span>
+                        </div>
+                        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs">
+                            <span class="text-gray-400">${meta.version}</span>
+                            ${meta.note ? `<span class="text-amber-600">${meta.note}</span>` : ''}
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="file-card p-4 sm:px-6 hover:bg-blue-50/30 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center min-w-0 flex-1 mr-4">
+                                <div class="w-10 h-10 flex-shrink-0 bg-gray-100 rounded-lg flex items-center justify-center mr-4 text-gray-500">
+                                    <i class="${icon} text-xl"></i>
+                                </div>
+                                <div class="truncate min-w-0">
+                                    <h3 class="text-sm font-semibold text-gray-900 truncate" title="${file.name}">
+                                        ${file.name}${catLabel}
+                                    </h3>
+                                    ${metaHtml}
+                                    ${!meta ? `<p class="text-xs text-gray-400 mt-1">${size}</p>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 flex flex-col items-end gap-1 ml-3">
+                                <a href="${file.download_url}" 
+                                   download="${file.name}"
+                                   class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm">
+                                    <i class="fas fa-download mr-2"></i> 下载
+                                </a>
+                                ${meta ? `<span class="text-xs text-gray-400">${size}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         async function fetchFiles() {
             const fileListContainer = document.getElementById('fileList');
             const fileCountBadge = document.getElementById('fileCount');
             const breadcrumb = document.getElementById('breadcrumb');
+            const searchInput = document.getElementById('searchInput');
 
             fileListContainer.innerHTML = `
                 <div class="p-6 space-y-4">
-                    <div class="h-12 loading-shimmer rounded-lg"></div>
-                    <div class="h-12 loading-shimmer rounded-lg"></div>
-                    <div class="h-12 loading-shimmer rounded-lg"></div>
+                    <div class="h-20 loading-shimmer rounded-lg"></div>
+                    <div class="h-20 loading-shimmer rounded-lg"></div>
+                    <div class="h-20 loading-shimmer rounded-lg"></div>
                 </div>
             `;
             fileCountBadge.textContent = '正在加载...';
@@ -126,7 +261,6 @@
                 let allFiles = [];
 
                 if (currentCategory === 'all') {
-                    // 获取所有子目录的文件
                     const categories = Object.keys(CATEGORIES).filter(k => k !== 'all');
                     const results = await Promise.allSettled(
                         categories.map(cat =>
@@ -160,49 +294,9 @@
                     breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2 text-yellow-500"></i>/vulkans/<span class="text-blue-600">${currentCategory}</span>`;
                 }
 
-                if (allFiles.length === 0) {
-                    fileListContainer.innerHTML = `
-                        <div class="p-12 text-center">
-                            <i class="fas fa-inbox text-4xl text-gray-200 mb-4"></i>
-                            <p class="text-gray-400">该分类下暂无文件</p>
-                        </div>
-                    `;
-                    fileCountBadge.textContent = '0 个文件';
-                    return;
-                }
-
-                fileCountBadge.textContent = `${allFiles.length} 个文件`;
-                fileListContainer.innerHTML = allFiles.map(file => {
-                    const size = formatBytes(file.size);
-                    const extension = file.name.split('.').pop().toLowerCase();
-                    const icon = getFileIcon(extension);
-                    const catLabel = currentCategory === 'all' 
-                        ? `<span class="text-xs px-2 py-0.5 rounded-full ${CATEGORIES[file.category].color} text-white ml-2">${CATEGORIES[file.category].name}</span>`
-                        : '';
-                    
-                    return `
-                        <div class="file-card p-4 sm:px-6 flex items-center justify-between hover:bg-blue-50/30 transition-all">
-                            <div class="flex items-center min-w-0 flex-1 mr-4">
-                                <div class="w-10 h-10 flex-shrink-0 bg-gray-100 rounded-lg flex items-center justify-center mr-4 text-gray-500">
-                                    <i class="${icon} text-xl"></i>
-                                </div>
-                                <div class="truncate">
-                                    <h3 class="text-sm font-semibold text-gray-900 truncate" title="${file.name}">
-                                        ${file.name}${catLabel}
-                                    </h3>
-                                    <p class="text-xs text-gray-400 mt-1">${size}</p>
-                                </div>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <a href="${file.download_url}" 
-                                   download="${file.name}"
-                                   class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm">
-                                    <i class="fas fa-download mr-2"></i> 下载
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                allLoadedFiles = allFiles;
+                searchInput.value = '';
+                renderFileList(allFiles, '');
 
             } catch (error) {
                 console.error(error);
@@ -215,6 +309,12 @@
                 `;
                 fileCountBadge.textContent = '加载出错';
             }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
         }
 
         function formatBytes(bytes, decimals = 2) {
@@ -248,8 +348,9 @@
             return icons[ext] || 'fas fa-file text-gray-400';
         }
 
-        window.onload = () => {
+        window.onload = async () => {
             renderCategoryNav();
+            await loadDriverMeta();
             fetchFiles();
         };
     </script>
