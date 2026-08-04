@@ -92,7 +92,7 @@
       "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
       "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
       "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1-G4, Exynos 2200/2400 等",
-      "note": "待验证。来源未确认，请勿安装进 Factory 分区，出事不负责"
+      "note": "待验证。来源未确认，请勿安装进 Factory 工具，出事不负责"
     }
   ]
 }
