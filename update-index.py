@@ -69,14 +69,21 @@ def main():
 
     # 生成嵌入的 JS 数据
     embedded = json.dumps(files_data, ensure_ascii=False, indent=2)
+    full_line = f'const EMBEDDED_FILES = {embedded};'
 
-    # 替换 /* AUTO_GENERATED_DATA */ 占位符
+    # 两种匹配策略：
+    # 1. 有占位符 -> 替换占位符
+    # 2. 已有数据 -> 正则替换整个数据块
     placeholder = '/* AUTO_GENERATED_DATA */'
-    if placeholder not in html:
-        print(f'ERROR: 未找到占位符 {placeholder}')
-        return 1
-
-    new_html = html.replace(placeholder, embedded, 1)
+    if placeholder in html:
+        new_html = html.replace(placeholder, embedded, 1)
+    else:
+        # 匹配 const EMBEDDED_FILES = { ... }; 整个数据块
+        pattern = r'const EMBEDDED_FILES = \{[\s\S]*?\n\};'
+        if not re.search(pattern, html):
+            print(f'ERROR: 未找到 EMBEDDED_FILES 数据块')
+            return 1
+        new_html = re.sub(pattern, full_line, html, count=1)
 
     if new_html == html:
         total = sum(len(v) for v in files_data.values())
