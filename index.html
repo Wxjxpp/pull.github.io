@@ -8,42 +8,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        /* ============ Light theme (default) ============ */
+        /* ============ Light theme (default) — Claude-inspired ============ */
         :root, [data-theme="light"] {
-            --bg: #f6f7fb;
+            --bg: #f7f7f8;
             --surface: #ffffff;
-            --surface2: #f0f2f7;
-            --border: #e2e6ef;
-            --text: #1f2937;
-            --text-dim: #6b7280;
-            --accent: #6366f1;
-            --accent2: #818cf8;
-            --accent-soft: rgba(99,102,241,0.08);
-            --green: #10b981;
-            --amber: #f59e0b;
-            --red: #ef4444;
-            --purple: #8b5cf6;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 16px rgba(17,24,39,0.06);
+            --surface2: #f0f0f2;
+            --border: #e5e5ea;
+            --text: #374151;
+            --text-dim: #8e8ea0;
+            --accent: #d97706;
+            --accent2: #f59e0b;
+            --accent-soft: rgba(217,119,6,0.08);
+            --green: #059669;
+            --amber: #d97706;
+            --red: #dc2626;
+            --purple: #7c3aed;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 14px rgba(0,0,0,0.05);
+            /* Buttons: non-focus state */
+            --btn-bg: transparent;
+            --btn-color: var(--accent);
+            --btn-border: var(--accent);
         }
 
-        /* ============ Dark theme ============ */
+        /* ============ Dark theme — Claude-inspired ============ */
         [data-theme="dark"] {
-            --bg: #0f1220;
-            --surface: #181c2e;
-            --surface2: #202640;
-            --border: #2b3250;
-            --text: #e2e8f0;
-            --text-dim: #8892b0;
-            --accent: #818cf8;
-            --accent2: #a5b4fc;
-            --accent-soft: rgba(129,140,248,0.12);
+            --bg: #1a1a1a;
+            --surface: #2a2a2a;
+            --surface2: #333336;
+            --border: #3f3f46;
+            --text: #e5e5e7;
+            --text-dim: #9ca3af;
+            --accent: #f59e0b;
+            --accent2: #fbbf24;
+            --accent-soft: rgba(245,158,11,0.12);
             --green: #34d399;
             --amber: #fbbf24;
             --red: #f87171;
             --purple: #c4b5fd;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-            --shadow-md: 0 6px 20px rgba(0,0,0,0.25);
+            --shadow-md: 0 6px 20px rgba(0,0,0,0.3);
+            --btn-bg: transparent;
+            --btn-color: var(--accent);
+            --btn-border: var(--accent);
         }
 
         * { box-sizing: border-box; }
@@ -57,7 +64,7 @@
             letter-spacing: 0.01em;
         }
 
-        /* Soft ambient gradient */
+        /* Soft ambient gradient — warm Claude tones */
         body::before {
             content: '';
             position: fixed;
@@ -72,11 +79,11 @@
             position: fixed;
             bottom: -20%; right: -10%;
             width: 55%; height: 45%;
-            background: radial-gradient(circle at 70% 60%, rgba(139,92,246,0.06) 0%, transparent 60%);
+            background: radial-gradient(circle at 70% 60%, rgba(124,58,237,0.04) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
         }
-        [data-theme="dark"] body::after { background: radial-gradient(circle at 70% 60%, rgba(196,181,253,0.08) 0%, transparent 60%); }
+        [data-theme="dark"] body::after { background: radial-gradient(circle at 70% 60%, rgba(217,119,6,0.08) 0%, transparent 60%); }
 
         .content { position: relative; z-index: 1; }
 
@@ -105,9 +112,9 @@
             background: var(--accent-soft);
         }
 
-        /* Accent text */
+        /* Accent text — warm orange gradient */
         .title-accent {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -170,7 +177,7 @@
             background: var(--accent-soft);
         }
         .cat-btn.active {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
             border-color: transparent;
             color: #fff;
             font-weight: 600;
@@ -259,25 +266,30 @@
             background: var(--surface2);
         }
 
-        /* Download button */
+        /* Download button — outlined by default, filled on hover/focus/active */
         .dl-btn {
-            display: inline-flex; align-items: center; gap: 7px;
-            padding: 9px 20px; border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 10px 14px; border-radius: 10px;
             font-size: 13px; font-weight: 600;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-            color: #fff;
-            border: none; cursor: pointer;
-            transition: all 0.22s ease; text-decoration: none;
-            box-shadow: 0 2px 8px var(--accent-soft);
+            background: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+            cursor: pointer;
+            transition: all 0.2s ease; text-decoration: none;
+            white-space: nowrap;
         }
-        .dl-btn:hover {
+        .dl-btn:hover,
+        .dl-btn:focus,
+        .dl-btn:active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 3px 10px var(--accent-soft);
             transform: translateY(-1px);
-            box-shadow: 0 5px 14px var(--accent-soft);
-            filter: brightness(1.08);
         }
         .dl-btn-sm {
             padding: 6px 13px; font-size: 12.5px;
-            background: var(--surface2); color: var(--text);
+            background: transparent; color: var(--text-dim);
             border: 1px solid var(--border); border-radius: 8px;
             text-decoration: none; display: inline-flex;
             align-items: center; gap: 5px;
@@ -288,6 +300,114 @@
             color: var(--accent);
             background: var(--accent-soft);
         }
+
+        /* ===== Hamburger & Settings Panel ===== */
+        .hamburger {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        .hamburger:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+        /* Drawer overlay */
+        .overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(3px);
+            opacity: 0; visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 998;
+        }
+        .overlay.open { opacity: 1; visibility: visible; }
+
+        .drawer {
+            position: fixed; top: 0; right: 0;
+            width: 320px; max-width: 86vw; height: 100vh;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            box-shadow: -8px 0 30px rgba(0,0,0,0.12);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+            z-index: 999;
+            display: flex; flex-direction: column;
+        }
+        .drawer.open { transform: translateX(0); }
+        .drawer-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .drawer-title { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .drawer-close {
+            width: 32px; height: 32px;
+            border-radius: 8px; border: none;
+            background: var(--surface2); color: var(--text-dim);
+            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .drawer-close:hover { color: var(--red); background: rgba(239,68,68,0.1); }
+        .drawer-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+
+        .setting-group { margin-bottom: 22px; }
+        .setting-label {
+            font-size: 12px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .preset-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .preset-btn {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            background: var(--surface2);
+        }
+        .preset-btn::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--pa) 0%, var(--pb) 100%);
+            opacity: 0.9;
+        }
+        .preset-btn::after {
+            content: attr(data-name);
+            position: absolute; left: 0; right: 0; bottom: 4px;
+            text-align: center; font-size: 10px; font-weight: 600;
+            color: rgba(0,0,0,0.75);
+            text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+        }
+        .preset-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .preset-btn.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+
+        .swatch-row { display: flex; gap: 10px; align-items: center; }
+        .swatch-wrap { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .swatch-wrap label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+        .swatch-wrap input[type="color"] {
+            width: 100%; height: 38px; padding: 2px;
+            border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface2); cursor: pointer;
+            -webkit-appearance: none;
+        }
+        .swatch-wrap input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
+
+        .reset-btn {
+            width: 100%; margin-top: 8px;
+            padding: 10px; border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface2); color: var(--text-dim);
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover { color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.06); }
 
         .badge {
             font-size: 11px; padding: 3px 9px;
@@ -306,6 +426,67 @@
     </style>
 </head>
 <body>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+    <!-- Settings Drawer -->
+    <aside class="drawer" id="settingsDrawer" role="dialog" aria-modal="true" aria-label="设置">
+        <div class="drawer-header">
+            <div class="drawer-title" style="color: var(--text);">
+                <i class="fas fa-sliders-h" style="color: var(--accent);"></i> 显示设置
+            </div>
+            <button class="drawer-close" onclick="closeDrawer()" aria-label="关闭">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <!-- Theme mode -->
+            <div class="setting-group">
+                <span class="setting-label">主题模式</span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button onclick="setTheme('light')" id="mode-light"
+                        style="padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); background: #ffffff; color: #374151; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        <i class="fas fa-sun mr-1"></i> 亮色
+                    </button>
+                    <button onclick="setTheme('dark')" id="mode-dark"
+                        style="padding: 10px; border-radius: 10px; border: 1.5px solid var(--border); background: #1a1a1a; color: #e5e5e7; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        <i class="fas fa-moon mr-1"></i> 暗色
+                    </button>
+                </div>
+            </div>
+
+            <!-- Accent presets -->
+            <div class="setting-group">
+                <span class="setting-label">强调色预设</span>
+                <div class="preset-row" id="presetRow">
+                    <!-- 8 presets injected via JS -->
+                </div>
+            </div>
+
+            <!-- Custom accent colors -->
+            <div class="setting-group">
+                <span class="setting-label">自定义强调色</span>
+                <div class="swatch-row">
+                    <div class="swatch-wrap">
+                        <label for="swatchA">主色</label>
+                        <input type="color" id="swatchA" value="#d97706" oninput="applyCustomAccent()">
+                    </div>
+                    <div class="swatch-wrap">
+                        <label for="swatchB">辅色</label>
+                        <input type="color" id="swatchB" value="#f59e0b" oninput="applyCustomAccent()">
+                    </div>
+                </div>
+                <button class="reset-btn" onclick="resetAccent()">
+                    <i class="fas fa-undo mr-1"></i> 恢复默认配色
+                </button>
+            </div>
+
+            <div style="font-size: 11px; color: var(--text-dim); padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.5;">
+                配色偏好保存在本地，仅影响你自己的视图。
+            </div>
+        </div>
+    </aside>
+
     <div class="content max-w-4xl mx-auto px-4 py-8">
         <!-- Header -->
         <header class="flex items-center justify-between mb-8 pb-6" style="border-bottom: 1px solid var(--border);">
@@ -317,13 +498,9 @@
                 <p class="mt-1 text-sm" style="color: var(--text-dim);">Vulkan 驱动下载 · 适配查询 · 持续更新</p>
             </div>
             <div class="flex items-center gap-2">
-                <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">
-                    <i class="fas fa-sun" id="themeIcon"></i>
+                <button class="hamburger" onclick="toggleDrawer()" title="设置">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank"
-                   class="theme-toggle" title="源码">
-                    <i class="fab fa-github"></i>
-                </a>
             </div>
         </header>
 
@@ -819,44 +996,52 @@
                     ? `<span class="badge ml-2" style="background: var(--surface2); color: var(--accent);">${CATEGORIES[f.category].name}</span>`
                     : '';
 
-                let metaHtml = '';
+                        let metaHtml = '';
                 if (m) {
                     metaHtml = `
-                        <div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md whitespace-nowrap"
-                                style="background: var(--accent-soft); color: var(--accent);">
-                                <i class="fas fa-microchip text-[10px]"></i> ${m.gpuGen}
-                            </span>
-                            <span class="inline-flex items-center gap-1 break-all" style="color: var(--text-dim);" title="${m.devices}">
-                                <i class="fas fa-mobile-alt"></i>${m.devices}
-                            </span>
-                        </div>
-                        <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-                            <span style="color: var(--text-dim);">${m.version}</span>
-                            ${m.note ? `<span style="color: var(--amber);">${m.note}</span>` : ''}
+                        <div class="mt-1.5 space-y-1 text-xs">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0"
+                                    style="background: var(--accent-soft); color: var(--accent);">
+                                    <i class="fas fa-microchip text-[10px]"></i> ${m.gpuGen}
+                                </span>
+                                <span class="inline-flex items-center gap-1 font-mono break-all px-2 py-0.5 rounded whitespace-pre-wrap"
+                                    style="background: var(--surface2); color: var(--text); font-size: 11px;"
+                                    title="${m.gpu}">
+                                    ${m.gpu}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1" style="color: var(--text-dim);" title="${m.devices}">
+                                <i class="fas fa-mobile-alt shrink-0"></i>
+                                <span>${m.devices}</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                <span style="color: var(--text-dim);">${m.version}</span>
+                                ${m.note ? `<span style="color: var(--amber);">${m.note}</span>` : ''}
+                            </div>
                         </div>`;
                 }
 
                 return `
                     <div class="file-card p-4 sm:p-5">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-start min-w-0 flex-1">
-                                <div class="icon-pill mr-4 mt-0.5">
-                                    <i class="${icon}"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <h3 class="text-sm font-semibold truncate" style="color: var(--text);" title="${f.name}">
+                        <div class="flex items-start gap-4">
+                            <div class="icon-pill shrink-0 mt-0.5">
+                                <i class="${icon}"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-start justify-between gap-3">
+                                    <h3 class="text-sm font-semibold break-all" style="color: var(--text);" title="${f.name}">
                                         ${f.name}${catLabel}
                                     </h3>
-                                    ${metaHtml}
-                                    ${!m ? `<p class="text-xs mt-1" style="color: var(--text-dim);">${f.sizeHuman}</p>` : ''}
                                 </div>
-                            </div>
-                            <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                                <a href="${getCDNUrl(f.category, f.name, f.size)}" download="${f.name}" class="dl-btn">
-                                    <i class="fas fa-download"></i> 下载
-                                </a>
-                                ${m ? `<span class="text-xs" style="color: var(--text-dim);">${f.sizeHuman}</span>` : ''}
+                                ${metaHtml}
+                                ${!m ? `<p class="text-xs mt-1" style="color: var(--text-dim);">${f.sizeHuman}</p>` : ''}
+                                <div class="mt-3 flex items-center justify-between gap-2">
+                                    ${m ? `<span class="text-xs shrink-0" style="color: var(--text-dim);">${f.sizeHuman}</span>` : '<span></span>'}
+                                    <a href="${getCDNUrl(f.category, f.name, f.size)}" download="${f.name}" class="dl-btn shrink-0">
+                                        <i class="fas fa-download"></i> 下载
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>`;
@@ -897,11 +1082,52 @@
 
         // ============ Theme ============
         const THEME_KEY = 'vulkans_theme';
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            const icon = document.getElementById('themeIcon');
-            if (icon) icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        const ACCENT_KEY = 'vulkans_accent';
+        const DEFAULT_ACCENT_LIGHT = { a: '#d97706', b: '#f59e0b' };
+        const DEFAULT_ACCENT_DARK  = { a: '#f59e0b', b: '#fbbf24' };
+
+        // 8 beautiful presets
+        const ACCENT_PRESETS = [
+            { id: 'claude',  name: 'Claude', a: '#d97706', b: '#f59e0b' },
+            { id: 'ocean',   name: '海洋',   a: '#0284c7', b: '#0ea5e9' },
+            { id: 'forest',  name: '森',     a: '#059669', b: '#10b981' },
+            { id: 'sakura',  name: '樱',     a: '#db2777', b: '#ec4899' },
+            { id: 'indigo',  name: '靛紫',   a: '#6366f1', b: '#8b5cf6' },
+            { id: 'ember',   name: '赤焰',   a: '#dc2626', b: '#f97316' },
+            { id: 'mono',    name: '墨',     a: '#374151', b: '#6b7280' },
+            { id: 'mint',    name: '薄荷',   a: '#0d9488', b: '#2dd4bf' },
+        ];
+
+        function currentMode() {
+            return document.documentElement.getAttribute('data-theme') || 'light';
         }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            try { localStorage.setItem(THEME_KEY, theme); } catch {}
+            // Refresh mode buttons highlight
+            updateModeButtons();
+            // Re-apply accent for the mode (if user has custom)
+            const saved = loadAccentFromStorage();
+            if (saved) {
+                _applyAccentRaw(saved.a, saved.b, /*persist*/ false);
+            } else {
+                // Reset to default for this mode
+                const def = theme === 'dark' ? DEFAULT_ACCENT_DARK : DEFAULT_ACCENT_LIGHT;
+                _applyAccentRaw(def.a, def.b, /*persist*/ false);
+            }
+        }
+
+        function updateModeButtons() {
+            const mode = currentMode();
+            ['light', 'dark'].forEach(m => {
+                const el = document.getElementById('mode-' + m);
+                if (!el) return;
+                el.style.borderColor = mode === m ? 'var(--accent)' : 'var(--border)';
+                el.style.boxShadow = mode === m ? '0 0 0 2px var(--accent-soft)' : 'none';
+            });
+        }
+
         function initTheme() {
             let theme = 'light';
             try {
@@ -909,18 +1135,125 @@
                 if (saved) theme = saved;
                 else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
             } catch {}
-            applyTheme(theme);
+            document.documentElement.setAttribute('data-theme', theme);
         }
+
         function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme') || 'light';
-            const next = current === 'dark' ? 'light' : 'dark';
-            applyTheme(next);
-            try { localStorage.setItem(THEME_KEY, next); } catch {}
+            const next = currentMode() === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+        }
+
+        // ============ Accent Colors ============
+        function hexToRgba(hex, alpha = 1) {
+            const h = (hex || '').replace('#', '');
+            if (h.length < 6) return `rgba(0,0,0,${alpha})`;
+            const r = parseInt(h.substring(0,2), 16);
+            const g = parseInt(h.substring(2,4), 16);
+            const b = parseInt(h.substring(4,6), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
+        function loadAccentFromStorage() {
+            try {
+                const raw = localStorage.getItem(ACCENT_KEY);
+                if (!raw) return null;
+                const obj = JSON.parse(raw);
+                if (obj && obj.a && obj.b) return obj;
+            } catch {}
+            return null;
+        }
+
+        function _applyAccentRaw(a, b, persist = true) {
+            const root = document.documentElement;
+            root.style.setProperty('--accent', a);
+            root.style.setProperty('--accent2', b);
+            root.style.setProperty('--accent-soft', hexToRgba(a, 0.08));
+            // Sync swatch inputs
+            const sa = document.getElementById('swatchA');
+            const sb = document.getElementById('swatchB');
+            if (sa) sa.value = a;
+            if (sb) sb.value = b;
+            // Preset highlight
+            highlightPreset(a, b);
+            if (persist) {
+                try { localStorage.setItem(ACCENT_KEY, JSON.stringify({ a, b })); } catch {}
+            }
+        }
+
+        function applyAccentPreset(id) {
+            const p = ACCENT_PRESETS.find(x => x.id === id);
+            if (!p) return;
+            _applyAccentRaw(p.a, p.b, true);
+        }
+
+        function applyCustomAccent() {
+            const a = document.getElementById('swatchA')?.value;
+            const b = document.getElementById('swatchB')?.value;
+            if (a && b) _applyAccentRaw(a, b, true);
+        }
+
+        function resetAccent() {
+            const def = currentMode() === 'dark' ? DEFAULT_ACCENT_DARK : DEFAULT_ACCENT_LIGHT;
+            _applyAccentRaw(def.a, def.b, true);
+            try { localStorage.removeItem(ACCENT_KEY); } catch {}
+            applyAccentPreset('claude');
+            try { localStorage.removeItem(ACCENT_KEY); } catch {}
+        }
+
+        function highlightPreset(a, b) {
+            const row = document.getElementById('presetRow');
+            if (!row) return;
+            row.querySelectorAll('.preset-btn').forEach(el => {
+                const pa = el.getAttribute('data-a');
+                const pb = el.getAttribute('data-b');
+                const match = (pa === a && pb === b);
+                if (match) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+        }
+
+        function renderPresets() {
+            const row = document.getElementById('presetRow');
+            if (!row) return;
+            row.innerHTML = ACCENT_PRESETS.map(p => `
+                <button class="preset-btn"
+                    data-id="${p.id}" data-name="${p.name}"
+                    data-a="${p.a}" data-b="${p.b}"
+                    style="--pa:${p.a}; --pb:${p.b};"
+                    onclick="applyAccentPreset('${p.id}')"
+                    aria-label="${p.name}"></button>
+            `).join('');
+        }
+
+        // ============ Drawer ============
+        function openDrawer() {
+            document.getElementById('settingsDrawer').classList.add('open');
+            document.getElementById('overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            updateModeButtons();
+        }
+        function closeDrawer() {
+            document.getElementById('settingsDrawer').classList.remove('open');
+            document.getElementById('overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function toggleDrawer() {
+            const open = document.getElementById('settingsDrawer').classList.contains('open');
+            open ? closeDrawer() : openDrawer();
         }
 
         // ============ Init ============
         window.onload = () => {
             initTheme();
+            renderPresets();
+            // Apply accent (custom saved or default for mode)
+            const saved = loadAccentFromStorage();
+            const mode = currentMode();
+            const def = mode === 'dark' ? DEFAULT_ACCENT_DARK : DEFAULT_ACCENT_LIGHT;
+            if (saved) _applyAccentRaw(saved.a, saved.b, false);
+            else _applyAccentRaw(def.a, def.b, false);
+            updateModeButtons();
+
             loadReadme();
             fetchCapsViewer();
             renderCategoryNav();
