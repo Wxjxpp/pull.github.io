@@ -37,11 +37,18 @@
             </div>
         </header>
 
+        <!-- 分类选择 -->
+        <div class="mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2" id="categoryNav">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                 <div class="flex items-center text-sm font-medium text-gray-600">
                     <i class="fas fa-folder-open mr-2 text-yellow-500"></i>
-                    <span>/vulkans</span>
+                    <span id="breadcrumb">/vulkans</span>
                 </div>
                 <div id="fileCount" class="text-xs text-gray-400 uppercase tracking-wider">正在加载...</div>
             </div>
@@ -64,40 +71,114 @@
     <script>
         const REPO_OWNER = 'Wxjxpp';
         const REPO_NAME = 'pull.github.io';
-        const FOLDER_PATH = 'vulkans';
+        const BASE_PATH = 'vulkans';
+
+        const CATEGORIES = {
+            'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
+            'snapdragon': { name: 'Snapdragon', icon: 'fa-microchip', color: 'bg-red-500' },
+            'mediatek': { name: 'MediaTek', icon: 'fa-microchip', color: 'bg-blue-500' },
+            'exynos': { name: 'Exynos', icon: 'fa-microchip', color: 'bg-purple-500' },
+            'tensor': { name: 'Tensor', icon: 'fa-microchip', color: 'bg-green-500' },
+            'mali': { name: 'Mali', icon: 'fa-microchip', color: 'bg-orange-500' },
+            'powervr': { name: 'PowerVR', icon: 'fa-microchip', color: 'bg-yellow-600' },
+            'other': { name: '其他', icon: 'fa-ellipsis-h', color: 'bg-gray-500' }
+        };
+
+        let currentCategory = 'all';
+
+        function renderCategoryNav() {
+            const nav = document.getElementById('categoryNav');
+            nav.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
+                <button 
+                    onclick="switchCategory('${key}')" 
+                    class="px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5
+                    ${key === currentCategory 
+                        ? 'text-white shadow-sm ' + cat.color 
+                        : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
+                    }">
+                    <i class="fas ${cat.icon}"></i>
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function switchCategory(category) {
+            currentCategory = category;
+            renderCategoryNav();
+            fetchFiles();
+        }
 
         async function fetchFiles() {
             const fileListContainer = document.getElementById('fileList');
             const fileCountBadge = document.getElementById('fileCount');
+            const breadcrumb = document.getElementById('breadcrumb');
+
+            fileListContainer.innerHTML = `
+                <div class="p-6 space-y-4">
+                    <div class="h-12 loading-shimmer rounded-lg"></div>
+                    <div class="h-12 loading-shimmer rounded-lg"></div>
+                    <div class="h-12 loading-shimmer rounded-lg"></div>
+                </div>
+            `;
+            fileCountBadge.textContent = '正在加载...';
 
             try {
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FOLDER_PATH}`);
-                
-                if (!response.ok) {
-                    throw new Error('无法获取文件列表');
+                let allFiles = [];
+
+                if (currentCategory === 'all') {
+                    // 获取所有子目录的文件
+                    const categories = Object.keys(CATEGORIES).filter(k => k !== 'all');
+                    const results = await Promise.allSettled(
+                        categories.map(cat =>
+                            fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${BASE_PATH}/${cat}`)
+                                .then(r => r.ok ? r.json() : Promise.resolve([]))
+                        )
+                    );
+                    results.forEach((result, idx) => {
+                        if (result.status === 'fulfilled' && Array.isArray(result.value)) {
+                            const catName = categories[idx];
+                            result.value.filter(item => item.type === 'file').forEach(file => {
+                                allFiles.push({ ...file, category: catName });
+                            });
+                        }
+                    });
+                    breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2 text-yellow-500"></i>/vulkans`;
+                } else {
+                    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${BASE_PATH}/${currentCategory}`);
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            allFiles = [];
+                        } else {
+                            throw new Error('无法获取文件列表');
+                        }
+                    } else {
+                        const data = await response.json();
+                        allFiles = (Array.isArray(data) ? data : [data])
+                            .filter(item => item.type === 'file')
+                            .map(file => ({ ...file, category: currentCategory }));
+                    }
+                    breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2 text-yellow-500"></i>/vulkans/<span class="text-blue-600">${currentCategory}</span>`;
                 }
 
-                const files = await response.json();
-                
-                // 过滤掉目录，只显示文件
-                const onlyFiles = files.filter(item => item.type === 'file');
-                
-                if (onlyFiles.length === 0) {
+                if (allFiles.length === 0) {
                     fileListContainer.innerHTML = `
                         <div class="p-12 text-center">
                             <i class="fas fa-inbox text-4xl text-gray-200 mb-4"></i>
-                            <p class="text-gray-400">该目录下暂无文件</p>
+                            <p class="text-gray-400">该分类下暂无文件</p>
                         </div>
                     `;
                     fileCountBadge.textContent = '0 个文件';
                     return;
                 }
 
-                fileCountBadge.textContent = `${onlyFiles.length} 个文件`;
-                fileListContainer.innerHTML = onlyFiles.map(file => {
+                fileCountBadge.textContent = `${allFiles.length} 个文件`;
+                fileListContainer.innerHTML = allFiles.map(file => {
                     const size = formatBytes(file.size);
                     const extension = file.name.split('.').pop().toLowerCase();
                     const icon = getFileIcon(extension);
+                    const catLabel = currentCategory === 'all' 
+                        ? `<span class="text-xs px-2 py-0.5 rounded-full ${CATEGORIES[file.category].color} text-white ml-2">${CATEGORIES[file.category].name}</span>`
+                        : '';
                     
                     return `
                         <div class="file-card p-4 sm:px-6 flex items-center justify-between hover:bg-blue-50/30 transition-all">
@@ -106,7 +187,9 @@
                                     <i class="${icon} text-xl"></i>
                                 </div>
                                 <div class="truncate">
-                                    <h3 class="text-sm font-semibold text-gray-900 truncate" title="${file.name}">${file.name}</h3>
+                                    <h3 class="text-sm font-semibold text-gray-900 truncate" title="${file.name}">
+                                        ${file.name}${catLabel}
+                                    </h3>
                                     <p class="text-xs text-gray-400 mt-1">${size}</p>
                                 </div>
                             </div>
@@ -145,6 +228,7 @@
 
         function getFileIcon(ext) {
             const icons = {
+                'so': 'fas fa-cogs text-teal-500',
                 'pdf': 'fas fa-file-pdf text-red-500',
                 'doc': 'fas fa-file-word text-blue-500',
                 'docx': 'fas fa-file-word text-blue-500',
@@ -164,7 +248,10 @@
             return icons[ext] || 'fas fa-file text-gray-400';
         }
 
-        window.onload = fetchFiles;
+        window.onload = () => {
+            renderCategoryNav();
+            fetchFiles();
+        };
     </script>
 </body>
 </html>
