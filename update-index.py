@@ -71,17 +71,22 @@ def main():
     embedded = f'const EMBEDDED_FILES = {json.dumps(files_data, ensure_ascii=False, indent=2)};'
     embedded += f'\n        const CDN_BASE = "{CDN_BASE}";'
     embedded += f'\n        const RAW_BASE = "{RAW_BASE}";'
-    embedded += f'\n        const LARGE_FILE_THRESHOLD = {LARGE_FILE_THRESHOLD}; // 50MB，超过此大小用 raw GitHub'
+    embedded += f'\n        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB，超过此大小用 raw GitHub（jsDelivr 有 50MB 限制）'
 
-    # 替换占位符
-    if '/* AUTO_GENERATED_DATA */' in html:
-        html = html.replace('/* AUTO_GENERATED_DATA */', embedded)
-    else:
-        print('ERROR: 未找到占位符 /* AUTO_GENERATED_DATA */')
+    # 使用正则替换 EMBEDDED_FILES 数据块
+    pattern = r'const EMBEDDED_FILES = \{[\s\S]*?const LARGE_FILE_THRESHOLD = \d+ \* \d+ \* \d+;[^\n]*\n'
+    new_html = re.sub(pattern, embedded + '\n', html, count=1)
+
+    if new_html == html:
+        if re.search(pattern, html):
+            total = sum(len(v) for v in files_data.values())
+            print(f'OK: 数据已是最新 ({", ".join(f"{k}:{len(v)}个" for k,v in files_data.items())})')
+            return 0
+        print(f'ERROR: 未找到 EMBEDDED_FILES 数据块')
         return 1
 
     with open(INDEX_FILE, 'w', encoding='utf-8') as f:
-        f.write(html)
+        f.write(new_html)
 
     total = sum(len(v) for v in files_data.values())
     print(f'OK: 已嵌入 {total} 个文件的数据 ({", ".join(f"{k}:{len(v)}个" for k,v in files_data.items())})')
