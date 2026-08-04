@@ -11,7 +11,7 @@ Vulkan 驱动下载站，收集各平台 Turnip / Freedreno / Panfrost 等 Mesa 
 | Xclipse (三星) | AMD RDNA | Exynos 2200 / 2400 |
 | Mali (Tensor) | Mali-Gxx | Pixel 6 / 7 / 8 / 9 |
 | Mali (麒麟/其他) | Mali-Gxx | 麒麟 9000 / 9020 |
-| PowerVR | PowerVR | 虎贲 / 部分入门芯片 |
+| PowerVR（不受支持）| PowerVR| 虎贲 / 部分入门芯片|
 
 ## 驱动说明
 
@@ -23,8 +23,8 @@ Vulkan 驱动下载站，收集各平台 Turnip / Freedreno / Panfrost 等 Mesa 
 
 1. 确认设备 GPU 型号
 2. 选择对应分类下载 `.so` 文件
-3. 替换系统 `/vendor/lib64/hw/vulkan.*.so`
+3. 导入至Facetory以正常使用
 
 ## 外部工具
 
-- [VulkanCapsViewer](https://vulkan.gpuinfo.org/download.php) — 查看设备 Vulkan 能力
+- [VulkanCapsViewer](https://vulkan.gpuinfo.org/download.php) — 查看设备 Vulkan 能力，详见官网
