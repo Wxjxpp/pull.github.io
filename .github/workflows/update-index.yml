@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths:
       - 'vulkans/**'
-      - 'drivers.json'
       - 'update-index.py'
+      - '.github/workflows/update-index.yml'
 
 jobs:
   update-index:
