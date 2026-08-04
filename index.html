@@ -6,73 +6,248 @@
     <title>Vulkans 下载站</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        .file-card { transition: all 0.2s ease; }
-        .file-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .loading-shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+        :root {
+            --bg: #0a0e14;
+            --surface: #131820;
+            --surface2: #1a1f2e;
+            --border: #252b38;
+            --text: #b6c2d9;
+            --text-dim: #5c6a82;
+            --accent: #00e5ff;
+            --accent2: #00b8d4;
+            --green: #00e676;
+            --amber: #ffab00;
+            --red: #ff5252;
+            --purple: #b388ff;
         }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
         }
+        /* Background grid pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .content { position: relative; z-index: 1; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+        /* Glow accent */
+        .glow-text { text-shadow: 0 0 20px rgba(0,229,255,0.3); }
+        .glow-border { box-shadow: 0 0 0 1px var(--border), 0 0 20px rgba(0,229,255,0.05); }
+
+        /* Collapsible */
+        .collapse-toggle { cursor: pointer; user-select: none; transition: all 0.2s; }
+        .collapse-toggle:hover { color: var(--accent); }
+        .collapse-content { overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; }
+        .collapse-content.collapsed { max-height: 0 !important; opacity: 0; }
+        .collapse-icon { transition: transform 0.3s ease; display: inline-block; }
+        .collapse-icon.rotated { transform: rotate(180deg); }
+
+        /* File card */
+        .file-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        .file-card:hover {
+            border-color: var(--accent2);
+            box-shadow: 0 0 20px rgba(0,229,255,0.06);
+            transform: translateY(-1px);
+        }
+
+        /* Category button */
+        .cat-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+        .cat-btn:hover { border-color: var(--accent2); color: var(--text); }
+        .cat-btn.active {
+            background: var(--accent2);
+            border-color: var(--accent2);
+            color: #000;
+            font-weight: 600;
+        }
+        .cat-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Search */
+        .search-input {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            padding: 10px 16px 10px 44px;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+        }
+        .search-input::placeholder { color: var(--text-dim); }
+
+        /* Markdown content */
+        .markdown-body { color: var(--text); font-size: 14px; line-height: 1.8; }
+        .markdown-body h1 { font-size: 1.5em; color: var(--accent); margin: 0 0 0.5em; font-weight: 700; }
+        .markdown-body h2 { font-size: 1.2em; color: var(--text); margin: 1.2em 0 0.5em; padding-bottom: 0.3em; border-bottom: 1px solid var(--border); }
+        .markdown-body h3 { font-size: 1em; color: var(--accent2); margin: 1em 0 0.4em; }
+        .markdown-body p { margin: 0 0 0.8em; }
+        .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin: 0 0 0.8em; }
+        .markdown-body li { margin: 0.2em 0; }
+        .markdown-body code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; color: var(--accent); }
+        .markdown-body pre { background: var(--surface2); padding: 12px 16px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); }
+        .markdown-body pre code { background: none; padding: 0; color: var(--text); }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.8em 0; font-size: 13px; }
+        .markdown-body th { background: var(--surface2); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); color: var(--accent); font-weight: 600; }
+        .markdown-body td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .markdown-body a { color: var(--accent); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        .markdown-body blockquote { border-left: 3px solid var(--accent); margin: 0.8em 0; padding: 0.5em 1em; background: var(--surface2); border-radius: 0 8px 8px 0; color: var(--text-dim); }
+
+        /* Version history */
+        .version-item {
+            border-left: 2px solid var(--border);
+            padding: 8px 16px;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .version-item:hover { border-left-color: var(--accent2); background: var(--surface2); }
+
+        /* Download button */
+        .dl-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 600;
+            background: var(--accent2); color: #000;
+            border: none; cursor: pointer;
+            transition: all 0.2s; text-decoration: none;
+        }
+        .dl-btn:hover { background: var(--accent); box-shadow: 0 0 16px rgba(0,229,255,0.2); }
+        .dl-btn-sm {
+            padding: 5px 12px; font-size: 12px;
+            background: var(--surface2); color: var(--text);
+            border: 1px solid var(--border); border-radius: 6px;
+        }
+        .dl-btn-sm:hover { border-color: var(--accent2); color: var(--accent); }
+
+        .badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
-    <div class="max-w-4xl mx-auto px-4 py-12">
-        <header class="flex items-center justify-between mb-10">
+<body>
+    <div class="content max-w-4xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-8 pb-6 border-b" style="border-color: var(--border);">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-                    <i class="fas fa-download mr-3 text-blue-600"></i>
+                <h1 class="text-2xl font-bold glow-text flex items-center gap-3" style="color: var(--accent);">
+                    <i class="fas fa-microchip"></i>
                     Vulkans 下载站
                 </h1>
-                <p class="text-gray-500 mt-2">浏览并下载仓库中的文件</p>
+                <p class="mt-1 text-sm" style="color: var(--text-dim);">Vulkan 驱动下载 · 适配查询 · 持续更新</p>
             </div>
-            <div class="text-right">
-                <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank" class="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-                    <i class="fab fa-github mr-1"></i> 查看源码
-                </a>
-            </div>
+            <a href="https://github.com/Wxjxpp/pull.github.io" target="_blank"
+               class="text-sm flex items-center gap-1.5 transition-colors"
+               style="color: var(--text-dim);" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">
+                <i class="fab fa-github"></i> 源码
+            </a>
         </header>
 
-        <!-- 分类选择 -->
-        <div class="mb-6">
-            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2" id="categoryNav">
-                <!-- JS 动态渲染 -->
+        <!-- README Section -->
+        <div class="mb-6 rounded-xl glow-border" style="background: var(--surface);">
+            <div class="collapse-toggle flex items-center justify-between px-5 py-3.5" onclick="toggleReadme()">
+                <div class="flex items-center gap-2.5">
+                    <i class="fas fa-book-open" style="color: var(--accent);"></i>
+                    <span class="font-semibold text-sm">仓库说明</span>
+                    <span class="text-xs px-2 py-0.5 rounded" style="background: var(--surface2); color: var(--text-dim);">README</span>
+                </div>
+                <i class="fas fa-chevron-down collapse-icon text-sm" id="readmeIcon" style="color: var(--text-dim);"></i>
+            </div>
+            <div class="collapse-content" id="readmeContent" style="max-height: 2000px;">
+                <div class="px-5 pb-5 markdown-body" id="readmeBody">
+                    <div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);">
+                        <i class="fas fa-spinner fa-pulse"></i> 加载中...
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 搜索框 -->
+        <!-- VulkanCapsViewer Section -->
+        <div class="mb-6 rounded-xl glow-border" style="background: var(--surface);">
+            <div class="collapse-toggle flex items-center justify-between px-5 py-3.5" onclick="toggleCapsViewer()">
+                <div class="flex items-center gap-2.5">
+                    <i class="fas fa-flask" style="color: var(--green);"></i>
+                    <span class="font-semibold text-sm">VulkanCapsViewer 下载</span>
+                    <span class="text-xs px-2 py-0.5 rounded" style="background: var(--surface2); color: var(--text-dim);">官方工具</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs" id="capsVersion" style="color: var(--text-dim);">v4.12</span>
+                    <i class="fas fa-chevron-down collapse-icon text-sm" id="capsIcon" style="color: var(--text-dim);"></i>
+                </div>
+            </div>
+            <div class="collapse-content" id="capsContent" style="max-height: 2000px;">
+                <div class="px-5 pb-5" id="capsBody">
+                    <div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);">
+                        <i class="fas fa-spinner fa-pulse"></i> 加载中...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Nav -->
         <div class="mb-4">
-            <div class="relative">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="搜索 GPU 型号、设备名称或文件名...（如 Adreno 740、天玑 9300、骁龙 8 Gen 3）"
-                    class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-                    oninput="applyFilter()"
-                />
-            </div>
+            <div class="flex flex-wrap gap-2" id="categoryNav"></div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                <div class="flex items-center text-sm font-medium text-gray-600">
-                    <i class="fas fa-folder-open mr-2 text-yellow-500"></i>
+        <!-- Search -->
+        <div class="mb-4 relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-dim); z-index: 2;"></i>
+            <input type="text" id="searchInput"
+                placeholder="搜索 GPU 型号、设备名称或文件名...（如 Adreno 740、天玑 9300）"
+                class="search-input"
+                oninput="applyFilter()" />
+        </div>
+
+        <!-- File List -->
+        <div class="rounded-xl overflow-hidden glow-border" style="background: var(--surface);">
+            <div class="px-5 py-3.5 flex items-center justify-between border-b" style="border-color: var(--border);">
+                <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-dim);">
+                    <i class="fas fa-folder-open" style="color: var(--amber);"></i>
                     <span id="breadcrumb">/vulkans</span>
                 </div>
-                <div id="fileCount" class="text-xs text-gray-400 uppercase tracking-wider">正在加载...</div>
+                <div id="fileCount" class="text-xs uppercase tracking-wider" style="color: var(--text-dim);">加载中...</div>
             </div>
-
-            <div id="fileList" class="divide-y divide-gray-50">
-            </div>
+            <div id="fileList" class="divide-y" style="border-color: var(--border);"></div>
         </div>
 
-        <footer class="mt-12 text-center text-gray-400 text-xs">
-            <p>&copy; 2024 Vulkans Download Station. Powered by GitHub Pages.</p>
+        <footer class="mt-10 text-center text-xs" style="color: var(--text-dim);">
+            <p>Vulkans Download Station · Powered by GitHub Pages</p>
         </footer>
     </div>
 
@@ -213,7 +388,7 @@
 };
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
         const RAW_BASE = "https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main";
-        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB，超过此大小用 raw GitHub（jsDelivr 有 50MB 限制）
+        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB
 
         const CATEGORIES = {
             'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
@@ -230,8 +405,191 @@
 
         let currentCategory = 'all';
 
+        // ============ README ============
+        let readmeOpen = true;
+        async function loadReadme() {
+            const body = document.getElementById('readmeBody');
+            try {
+                const resp = await fetch('https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main/README.md');
+                if (!resp.ok) throw new Error('not found');
+                const md = await resp.text();
+                body.innerHTML = marked.parse(md);
+            } catch (e) {
+                body.innerHTML = `<p style="color: var(--text-dim);">暂无 README 说明文件</p>`;
+            }
+        }
+        function toggleReadme() {
+            readmeOpen = !readmeOpen;
+            const content = document.getElementById('readmeContent');
+            const icon = document.getElementById('readmeIcon');
+            if (readmeOpen) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('rotated');
+            }
+        }
+
+        // ============ VulkanCapsViewer ============
+        let capsOpen = true;
+        const CAPS_CACHE_KEY = 'vulkancaps_history';
+        const CAPS_URL = 'https://vulkan.gpuinfo.org/download.php';
+        const CORS_PROXY = 'https://corsproxy.io/?';
+
+        function getCapsHistory() {
+            try { return JSON.parse(localStorage.getItem(CAPS_CACHE_KEY)) || []; }
+            catch { return []; }
+        }
+        function saveCapsHistory(history) {
+            try { localStorage.setItem(CAPS_CACHE_KEY, JSON.stringify(history)); }
+            catch {}
+        }
+
+        async function fetchCapsViewer() {
+            const body = document.getElementById('capsBody');
+            const versionEl = document.getElementById('capsVersion');
+            let history = getCapsHistory();
+
+            try {
+                const resp = await fetch(CORS_PROXY + encodeURIComponent(CAPS_URL));
+                const html = await resp.text();
+
+                // Parse Android APK link
+                const apkMatch = html.match(/href="([^"]*vulkancapsviewer[^"]*arm\.apk)"/i);
+                const versionMatch = html.match(/Current release\s+([\d.]+)/i) || html.match(/Release (\d+\.\d+)/i);
+                const dateMatch = html.match(/(\d{4}-\d{2}-\d{2})/);
+
+                const version = versionMatch ? versionMatch[1] : '';
+                const apkUrl = apkMatch ? apkMatch[1] : '';
+                const date = dateMatch ? dateMatch[1] : '';
+                const timestamp = new Date().toISOString();
+
+                const newEntry = { version, apkUrl, date, timestamp, source: 'fetched' };
+
+                // Deduplicate: only add if version changed
+                const existing = history.find(h => h.version === version);
+                if (!existing && version && apkUrl) {
+                    history.unshift(newEntry);
+                    // Keep max 20 entries
+                    if (history.length > 20) history = history.slice(0, 20);
+                    saveCapsHistory(history);
+                }
+
+                versionEl.textContent = version ? 'v' + version : 'v4.12';
+                renderCapsViewer(history);
+            } catch (e) {
+                // Fallback: use embedded data
+                if (history.length === 0) {
+                    history = [{
+                        version: '4.12',
+                        apkUrl: 'https://vulkan.gpuinfo.org/downloads/vulkancapsviewer_4.12_arm.apk',
+                        date: '2026-07-31',
+                        timestamp: new Date().toISOString(),
+                        source: 'fallback'
+                    }];
+                }
+                versionEl.textContent = history.length ? 'v' + history[0].version : 'v4.12';
+                renderCapsViewer(history);
+            }
+        }
+
+        function renderCapsViewer(history) {
+            const body = document.getElementById('capsBody');
+            if (!history.length) {
+                body.innerHTML = '<p style="color: var(--text-dim);">暂无下载记录</p>';
+                return;
+            }
+
+            const latest = history[0];
+            const oldEntries = history.slice(1);
+            const hasOld = oldEntries.length > 0;
+
+            let html = `
+                <div class="flex items-start justify-between gap-4 p-4 rounded-lg" style="background: var(--surface2);">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="badge" style="background: var(--accent2); color: #000;">最新</span>
+                            <span class="font-semibold" style="color: var(--accent);">VulkanCapsViewer v${latest.version}</span>
+                            ${latest.date ? `<span class="text-xs" style="color: var(--text-dim);">${latest.date}</span>` : ''}
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <a href="${latest.apkUrl}" target="_blank" class="dl-btn">
+                                <i class="fas fa-download"></i> Android APK (arm64)
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=de.saschawillems.vulkancapsviewer" target="_blank" class="dl-btn-sm">
+                                <i class="fab fa-google-play"></i> Google Play
+                            </a>
+                        </div>
+                    </div>
+                    <button onclick="refreshCapsViewer()" class="dl-btn-sm" title="刷新检查">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>`;
+
+            if (hasOld) {
+                html += `
+                <div class="mt-3">
+                    <div class="collapse-toggle flex items-center gap-2 text-xs py-2" onclick="toggleCapsHistory()" style="color: var(--text-dim);">
+                        <i class="fas fa-chevron-down collapse-icon text-[10px]" id="capsHistIcon"></i>
+                        <i class="fas fa-history"></i> 历史版本 (${oldEntries.length})
+                    </div>
+                    <div class="collapse-content collapsed" id="capsHistory" style="max-height: 1000px;">
+                        <div class="space-y-1">`;
+                oldEntries.forEach((entry, i) => {
+                    html += `
+                            <div class="version-item flex items-center justify-between gap-3 py-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs" style="color: var(--text-dim);">v${entry.version}</span>
+                                    ${entry.date ? `<span class="text-xs" style="color: var(--text-dim);">· ${entry.date}</span>` : ''}
+                                    <span class="text-xs px-1.5 py-0.5 rounded" style="background: var(--surface2); color: var(--text-dim); font-size: 10px;">${entry.source}</span>
+                                </div>
+                                <a href="${entry.apkUrl}" target="_blank" class="dl-btn-sm text-xs">
+                                    <i class="fas fa-download"></i> APK
+                                </a>
+                            </div>`;
+                });
+                html += `</div></div></div>`;
+            }
+
+            body.innerHTML = html;
+        }
+
+        function refreshCapsViewer() {
+            const body = document.getElementById('capsBody');
+            body.innerHTML = `<div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);"><i class="fas fa-spinner fa-pulse"></i> 检查更新中...</div>`;
+            fetchCapsViewer();
+        }
+
+        let capsHistOpen = false;
+        function toggleCapsHistory() {
+            capsHistOpen = !capsHistOpen;
+            const content = document.getElementById('capsHistory');
+            const icon = document.getElementById('capsHistIcon');
+            if (capsHistOpen) {
+                content.classList.remove('collapsed');
+                icon.classList.add('rotated');
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.remove('rotated');
+            }
+        }
+
+        function toggleCapsViewer() {
+            capsOpen = !capsOpen;
+            const content = document.getElementById('capsContent');
+            const icon = document.getElementById('capsIcon');
+            if (capsOpen) {
+                content.classList.remove('collapsed');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('collapsed');
+                icon.classList.add('rotated');
+            }
+        }
+
+        // ============ File List ============
         function getCDNUrl(category, name, size) {
-            // 大文件（>50MB）使用 raw.githubusercontent.com，jsDelivr 有 50MB 限制
             if (size && size > LARGE_FILE_THRESHOLD) {
                 return `${RAW_BASE}/vulkans/${category}/${encodeURIComponent(name)}`;
             }
@@ -251,22 +609,17 @@
 
         function renderCategoryNav() {
             const nav = document.getElementById('categoryNav');
-            nav.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => {
+            const entries = Object.entries(CATEGORIES);
+            nav.innerHTML = entries.map(([key, cat]) => {
                 const count = key === 'all'
                     ? Object.values(EMBEDDED_FILES).reduce((s, f) => s + f.length, 0)
                     : (EMBEDDED_FILES[key] || []).length;
                 const dimmed = count === 0 && key !== 'all' ? 'opacity-40' : '';
                 return `
                     <button onclick="switchCategory('${key}')" ${count === 0 && key !== 'all' ? 'disabled' : ''}
-                        class="px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${dimmed}
-                        ${key === currentCategory
-                            ? 'text-white shadow-sm ' + cat.color
-                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300'
-                        }">
-                        <i class="fas ${cat.icon}"></i>
-                        ${cat.name}
-                    </button>
-                `;
+                        class="cat-btn ${dimmed} ${key === currentCategory ? 'active' : ''}">
+                        <i class="fas ${cat.icon}"></i> ${cat.name}
+                    </button>`;
             }).join('');
         }
 
@@ -299,10 +652,10 @@
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="p-12 text-center">
-                        <i class="fas fa-inbox text-4xl text-gray-200 mb-4"></i>
+                        <i class="fas fa-inbox text-4xl mb-4 block" style="color: var(--border);"></i>
                         ${searchQuery
-                            ? '<p class="text-gray-400">没有匹配「<span class="font-medium text-gray-600">' + escapeHtml(searchQuery) + '</span>」的结果</p>'
-                            : '<p class="text-gray-400">该分类下暂无文件</p>'}
+                            ? '<p style="color: var(--text-dim);">没有匹配「<span style="color: var(--text);">' + escapeHtml(searchQuery) + '</span>」的结果</p>'
+                            : '<p style="color: var(--text-dim);">该分类下暂无文件</p>'}
                     </div>`;
                 badge.textContent = searchQuery ? '无匹配结果' : '0 个文件';
                 return;
@@ -314,50 +667,50 @@
                 const ext = f.name.split('.').pop().toLowerCase();
                 const icon = getFileIcon(ext);
                 const m = f.meta;
-                const catLabel = currentCategory === 'all'
-                    ? `<span class="text-xs px-2 py-0.5 rounded-full ${CATEGORIES[f.category].color} text-white ml-2">${CATEGORIES[f.category].name}</span>`
+                const catLabel = currentCategory === 'all' && CATEGORIES[f.category]
+                    ? `<span class="badge ml-2" style="background: var(--surface2); color: var(--accent);">${CATEGORIES[f.category].name}</span>`
                     : '';
 
                 let metaHtml = '';
                 if (m) {
                     metaHtml = `
                         <div class="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs">
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded whitespace-nowrap">
+                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded whitespace-nowrap"
+                                style="background: rgba(0,229,255,0.08); color: var(--accent);">
                                 <i class="fas fa-microchip text-[10px]"></i> ${m.gpuGen}
                             </span>
-                            <span class="text-gray-400">|</span>
-                            <span class="text-gray-500 break-all" title="${m.devices}">
+                            <span style="color: var(--text-dim);">|</span>
+                            <span class="break-all" style="color: var(--text-dim);" title="${m.devices}">
                                 <i class="fas fa-mobile-alt mr-0.5"></i>${m.devices}
                             </span>
                         </div>
                         <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-                            <span class="text-gray-400 whitespace-nowrap">${m.version}</span>
-                            ${m.note ? `<span class="text-amber-600">${m.note}</span>` : ''}
+                            <span style="color: var(--text-dim);">${m.version}</span>
+                            ${m.note ? `<span style="color: var(--amber);">${m.note}</span>` : ''}
                         </div>`;
                 }
 
                 return `
-                    <div class="file-card p-4 sm:px-6 hover:bg-blue-50/30 transition-all">
+                    <div class="file-card p-4 sm:px-5">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start min-w-0 flex-1">
-                                <div class="w-10 h-10 flex-shrink-0 bg-gray-100 rounded-lg flex items-center justify-center mr-4 text-gray-500 mt-0.5">
-                                    <i class="${icon} text-xl"></i>
+                                <div class="w-10 h-10 flex-shrink-0 rounded-lg flex items-center justify-center mr-3 mt-0.5"
+                                    style="background: var(--surface2);">
+                                    <i class="${icon} text-lg"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <h3 class="text-sm font-semibold text-gray-900 truncate" title="${f.name}">
+                                    <h3 class="text-sm font-semibold truncate" style="color: var(--text);" title="${f.name}">
                                         ${f.name}${catLabel}
                                     </h3>
                                     ${metaHtml}
-                                    ${!m ? `<p class="text-xs text-gray-400 mt-1">${f.sizeHuman}</p>` : ''}
+                                    ${!m ? `<p class="text-xs mt-1" style="color: var(--text-dim);">${f.sizeHuman}</p>` : ''}
                                 </div>
                             </div>
                             <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                                <a href="${getCDNUrl(f.category, f.name, f.size)}"
-                                   download="${f.name}"
-                                   class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm whitespace-nowrap">
-                                    <i class="fas fa-download mr-2"></i> 下载
+                                <a href="${getCDNUrl(f.category, f.name, f.size)}" download="${f.name}" class="dl-btn">
+                                    <i class="fas fa-download"></i> 下载
                                 </a>
-                                ${m ? `<span class="text-xs text-gray-400">${f.sizeHuman}</span>` : ''}
+                                ${m ? `<span class="text-xs" style="color: var(--text-dim);">${f.sizeHuman}</span>` : ''}
                             </div>
                         </div>
                     </div>`;
@@ -370,9 +723,9 @@
             searchInput.value = '';
 
             if (currentCategory === 'all') {
-                breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2 text-yellow-500"></i>/vulkans`;
+                breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2" style="color: var(--amber);"></i>/vulkans`;
             } else {
-                breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2 text-yellow-500"></i>/vulkans/<span class="text-blue-600">${currentCategory}</span>`;
+                breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2" style="color: var(--amber);"></i>/vulkans/<span style="color: var(--accent);">${currentCategory}</span>`;
             }
 
             const files = getCategoryFiles(currentCategory);
@@ -387,27 +740,19 @@
 
         function getFileIcon(ext) {
             const icons = {
-                'so': 'fas fa-cogs text-teal-500',
-                'pdf': 'fas fa-file-pdf text-red-500',
-                'doc': 'fas fa-file-word text-blue-500',
-                'docx': 'fas fa-file-word text-blue-500',
-                'xls': 'fas fa-file-excel text-green-500',
-                'xlsx': 'fas fa-file-excel text-green-500',
-                'zip': 'fas fa-file-archive text-yellow-600',
-                'rar': 'fas fa-file-archive text-yellow-600',
-                '7z': 'fas fa-file-archive text-yellow-600',
-                'jpg': 'fas fa-file-image text-purple-500',
-                'jpeg': 'fas fa-file-image text-purple-500',
-                'png': 'fas fa-file-image text-purple-500',
-                'gif': 'fas fa-file-image text-purple-500',
-                'txt': 'fas fa-file-alt text-gray-500',
-                'bin': 'fas fa-file-code text-gray-600',
-                'exe': 'fas fa-file-code text-blue-400'
+                'so': 'fas fa-cogs',
+                'apk': 'fab fa-android',
+                'zip': 'fas fa-file-archive',
+                'pdf': 'fas fa-file-pdf',
+                'txt': 'fas fa-file-alt',
             };
-            return icons[ext] || 'fas fa-file text-gray-400';
+            return icons[ext] || 'fas fa-file';
         }
 
+        // ============ Init ============
         window.onload = () => {
+            loadReadme();
+            fetchCapsViewer();
             renderCategoryNav();
             showFiles();
         };

@@ -68,22 +68,20 @@ def main():
         html = f.read()
 
     # 生成嵌入的 JS 数据
-    embedded = f'const EMBEDDED_FILES = {json.dumps(files_data, ensure_ascii=False, indent=2)};'
-    embedded += f'\n        const CDN_BASE = "{CDN_BASE}";'
-    embedded += f'\n        const RAW_BASE = "{RAW_BASE}";'
-    embedded += f'\n        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB，超过此大小用 raw GitHub（jsDelivr 有 50MB 限制）'
+    embedded = json.dumps(files_data, ensure_ascii=False, indent=2)
 
-    # 使用正则替换 EMBEDDED_FILES 数据块
-    pattern = r'const EMBEDDED_FILES = \{[\s\S]*?const LARGE_FILE_THRESHOLD = \d+ \* \d+ \* \d+;[^\n]*\n'
-    new_html = re.sub(pattern, embedded + '\n', html, count=1)
+    # 替换 /* AUTO_GENERATED_DATA */ 占位符
+    placeholder = '/* AUTO_GENERATED_DATA */'
+    if placeholder not in html:
+        print(f'ERROR: 未找到占位符 {placeholder}')
+        return 1
+
+    new_html = html.replace(placeholder, embedded, 1)
 
     if new_html == html:
-        if re.search(pattern, html):
-            total = sum(len(v) for v in files_data.values())
-            print(f'OK: 数据已是最新 ({", ".join(f"{k}:{len(v)}个" for k,v in files_data.items())})')
-            return 0
-        print(f'ERROR: 未找到 EMBEDDED_FILES 数据块')
-        return 1
+        total = sum(len(v) for v in files_data.values())
+        print(f'OK: 数据已是最新 ({", ".join(f"{k}:{len(v)}个" for k,v in files_data.items())})')
+        return 0
 
     with open(INDEX_FILE, 'w', encoding='utf-8') as f:
         f.write(new_html)

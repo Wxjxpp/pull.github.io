@@ -1,0 +1,30 @@
+# Vulkans 下载站
+
+Vulkan 驱动下载站，收集各平台 Turnip / Freedreno / Panfrost 等 Mesa Vulkan 驱动。
+
+## 支持的 GPU
+
+| 分类 | GPU | 代表设备 |
+|------|-----|---------|
+| Adreno | Adreno 6xx / 7xx / 8xx | 骁龙 8 Elite / 8 Gen 3 / 8 Gen 2 |
+| Mali (天玑) | Mali-Gxx | 天玑 9000 / 9300 / 9400 |
+| Xclipse (三星) | AMD RDNA | Exynos 2200 / 2400 |
+| Mali (Tensor) | Mali-Gxx | Pixel 6 / 7 / 8 / 9 |
+| Mali (麒麟/其他) | Mali-Gxx | 麒麟 9000 / 9020 |
+| PowerVR | PowerVR | 虎贲 / 部分入门芯片 |
+
+## 驱动说明
+
+- **Turnip** — 高通 Adreno 开源 Vulkan 驱动（Mesa Freedreno 项目）
+- **libvulkan_freedreno** — Freedreno 官方 Vulkan 驱动
+- **libvulkan_panfrost** — ARM Mali 开源 Vulkan 驱动（Mesa Panfrost 项目）
+
+## 使用方法
+
+1. 确认设备 GPU 型号
+2. 选择对应分类下载 `.so` 文件
+3. 替换系统 `/vendor/lib64/hw/vulkan.*.so`
+
+## 外部工具
+
+- [VulkanCapsViewer](https://vulkan.gpuinfo.org/download.php) — 查看设备 Vulkan 能力
