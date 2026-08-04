@@ -581,149 +581,7 @@
     </div>
 
     <script>
-        const EMBEDDED_FILES = {
-  "snapdragon": [
-    {
-      "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
-      "size": 14343704,
-      "sizeHuman": "13.7 MB",
-      "meta": {
-        "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
-        "version": "Mesa 26.3.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 710, 720，722",
-        "gpuGen": "Adreno 7xx",
-        "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720/722 的设备",
-        "note": "Banners-Turnip 构建，含 710/720 专项补丁，2026-08-01 版本"
-      }
-    },
-    {
-      "name": "libvulkan_freedreno.so",
-      "size": 10393544,
-      "sizeHuman": "9.9 MB",
-      "meta": {
-        "name": "libvulkan_freedreno.so",
-        "version": "Mesa 24.3.2",
-        "arch": "ARM aarch64",
-        "source": "Mesa 官方构建",
-        "gpu": "Adreno 618, 630",
-        "gpuGen": "Adreno 6xx",
-        "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 618/630 的设备",
-        "note": "Mesa 24.3.2 稳定版 freedreno (Turnip)"
-      }
-    },
-    {
-      "name": "libvulkan_freedreno_25.0.1.so",
-      "size": 11748520,
-      "sizeHuman": "11.2 MB",
-      "meta": {
-        "name": "libvulkan_freedreno_25.0.1.so",
-        "version": "Mesa 25.0.1",
-        "arch": "ARM aarch64",
-        "source": "Mesa 官方构建",
-        "gpu": "Adreno 618, 630",
-        "gpuGen": "Adreno 6xx",
-        "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 618/630 的设备",
-        "note": "Mesa 25.0.1 稳定版 freedreno (Turnip)"
-      }
-    },
-    {
-      "name": "libvulkan_freedreno_26.2.0(1).so",
-      "size": 18606849,
-      "sizeHuman": "17.7 MB",
-      "meta": {
-        "name": "libvulkan_freedreno_26.2.0(1).so",
-        "version": "Mesa 26.2.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 618, 623, 630, 810, 825, 829, 830, 840, X1-45, X1-85, X2-85",
-        "gpuGen": "Adreno 6xx / 7xx / 8xx (标准版)",
-        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 8s Gen 3, 7+ Gen 3, X Elite 等",
-        "note": "Banners-Turnip 标准版 (A6xx/A7xx)，Mesa 26.2.0-devel，无额外补丁"
-      }
-    },
-    {
-      "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
-      "size": 17159433,
-      "sizeHuman": "16.4 MB",
-      "meta": {
-        "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
-        "version": "Mesa 26.0.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 618, 623, 630, 840, X1-45, X1-85, X2-85",
-        "gpuGen": "Adreno 6xx / 7xx (标准版)",
-        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, X Elite 等",
-        "note": "Banners-Turnip R8 构建，Mesa 26.0.0-devel，覆盖 a6xx-a7xx"
-      }
-    }
-  ],
-  "mali": [
-    {
-      "name": "libvulkan_panfrost(1).so",
-      "size": 12560168,
-      "sizeHuman": "12.0 MB",
-      "meta": {
-        "name": "libvulkan_panfrost(1).so",
-        "version": "Mesa 25.2.8 (Ubuntu)",
-        "arch": "ARM aarch64",
-        "source": "Ubuntu 软件源",
-        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
-        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
-        "devices": "麒麟 810/820/980/990, 天玑 700-1200, Tensor G1/G2, Exynos 980-1280 等",
-        "note": "PanVK — Mesa 官方支持列表。注意：G71 / G710 不在支持范围内"
-      }
-    },
-    {
-      "name": "libvulkan_panfrost_26.1.6-r0.so",
-      "size": 15113960,
-      "sizeHuman": "14.4 MB",
-      "meta": {
-        "name": "libvulkan_panfrost_26.1.6-r0.so",
-        "version": "Mesa 26.1.6",
-        "arch": "ARM aarch64",
-        "source": "Mesa 官方构建",
-        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
-        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
-        "devices": "麒麟 810/820/980/990, 天玑 700-1200, Tensor G1/G2, Exynos 980-1280 等",
-        "note": "PanVK Mesa 26.1.6 稳定版"
-      }
-    },
-    {
-      "name": "libvulkan_panfrost_unknown_1.so",
-      "size": 17884096,
-      "sizeHuman": "17.1 MB",
-      "meta": {
-        "name": "libvulkan_panfrost_unknown_1.so",
-        "version": "Mesa 26.2.0-devel",
-        "arch": "ARM aarch64",
-        "source": "未知来源",
-        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
-        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
-        "devices": "麒麟 9000, 天玑 9000+, Tensor G3/G4, Exynos 2200+ 等",
-        "note": "PanVK Mesa 26.2.0-devel，来源未确认"
-      }
-    }
-  ],
-  "待验证": [
-    {
-      "name": "libvulkan_panfrost.so",
-      "size": 102798568,
-      "sizeHuman": "98.0 MB",
-      "meta": {
-        "name": "libvulkan_panfrost.so",
-        "version": "Mesa 26.2.0-devel",
-        "arch": "ARM aarch64",
-        "source": "未知来源",
-        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
-        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
-        "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1-G4, Exynos 2200/2400 等",
-        "note": "待验证。来源未确认，请勿安装进 Factory 工具，出事不负责"
-      }
-    }
-  ]
-};
+        const EMBEDDED_FILES = /* AUTO_GENERATED_DATA */;
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
         const RAW_BASE = "https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main";
         const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB
@@ -943,9 +801,13 @@
                                 ${!m ? `<p class="text-xs mt-1" style="color: var(--text-dim);">${f.sizeHuman}</p>` : ''}
                                 <div class="mt-3 flex items-center justify-between gap-2">
                                     ${m ? `<span class="text-xs shrink-0" style="color: var(--text-dim);">${f.sizeHuman}</span>` : '<span></span>'}
+                                    ${f.category === '待验证' ? `
+                                    <span class="dl-btn shrink-0" style="background: var(--surface2); color: var(--text-dim); border-color: var(--border); cursor: not-allowed; opacity: 0.5;">
+                                        <i class="fas fa-lock"></i> 待验证
+                                    </span>` : `
                                     <a href="${getCDNUrl(f.category, f.name, f.size)}" download="${f.name}" class="dl-btn shrink-0">
                                         <i class="fas fa-download"></i> 下载
-                                    </a>
+                                    </a>`}
                                 </div>
                             </div>
                         </div>
