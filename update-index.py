@@ -6,6 +6,8 @@ import json, os, re
 VULKANS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'vulkans')
 INDEX_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html')
 CDN_BASE = 'https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main'
+RAW_BASE = 'https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main'
+LARGE_FILE_THRESHOLD = 50 * 1024 * 1024  # 50MB，超过此大小用 raw GitHub
 
 CATEGORIES = ['snapdragon', 'mediatek', 'exynos', 'tensor', 'mali', 'powervr', 'other']
 
@@ -68,6 +70,8 @@ def main():
     # 生成嵌入的 JS 数据
     embedded = f'const EMBEDDED_FILES = {json.dumps(files_data, ensure_ascii=False, indent=2)};'
     embedded += f'\n        const CDN_BASE = "{CDN_BASE}";'
+    embedded += f'\n        const RAW_BASE = "{RAW_BASE}";'
+    embedded += f'\n        const LARGE_FILE_THRESHOLD = {LARGE_FILE_THRESHOLD}; // 50MB，超过此大小用 raw GitHub'
 
     # 替换占位符
     if '/* AUTO_GENERATED_DATA */' in html:

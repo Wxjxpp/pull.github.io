@@ -210,6 +210,8 @@
   ]
 };
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
+        const RAW_BASE = "https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main";
+        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB，超过此大小用 raw GitHub（jsDelivr 有 50MB 限制）
 
         const CATEGORIES = {
             'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
@@ -224,7 +226,11 @@
 
         let currentCategory = 'all';
 
-        function getCDNUrl(category, name) {
+        function getCDNUrl(category, name, size) {
+            // 大文件（>50MB）使用 raw.githubusercontent.com，jsDelivr 有 50MB 限制
+            if (size && size > LARGE_FILE_THRESHOLD) {
+                return `${RAW_BASE}/vulkans/${category}/${encodeURIComponent(name)}`;
+            }
             return `${CDN_BASE}/vulkans/${category}/${encodeURIComponent(name)}`;
         }
 
@@ -342,7 +348,7 @@
                                 </div>
                             </div>
                             <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                                <a href="${getCDNUrl(f.category, f.name)}"
+                                <a href="${getCDNUrl(f.category, f.name, f.size)}"
                                    download="${f.name}"
                                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-sm whitespace-nowrap">
                                     <i class="fas fa-download mr-2"></i> 下载
