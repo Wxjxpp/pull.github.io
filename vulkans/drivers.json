@@ -72,7 +72,7 @@
       "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G610, G720, G725, T600-T880",
       "gpuGen": "Midgard / Bifrost / Valhall / G1",
       "devices": "麒麟 9000+, 天玑 9000+, Tensor G3/G4, Exynos 2200+ 等",
-      "note": "开发版，支持 Mali G1 系列"
+      "note": "开发版，可能支持 Mali G1 系列"
     }
   ],
   "待验证": [
@@ -83,7 +83,7 @@
       "gpu": "Mali-G1-Premium/Pro/Ultra, G31, G310v1-v5, G51, G52, G57, G71, G72, G76, G710, G610, G720, G725, T600-T880",
       "gpuGen": "Midgard / Bifrost / Valhall / G1",
       "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1/G2/G3/G4, Exynos 2200/2400 等",
-      "note": "待验证，支持 Mali G1 系列旗舰 GPU"
+      "note": "待验证，千万不要下载安装进Facetory，出事我们不负责。可能支持 Mali G1 系列旗舰 GPU"
     }
   ]
 }
