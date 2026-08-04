@@ -1,4 +1,4 @@
-{
+3{
   "snapdragon": [
     {
       "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
@@ -93,7 +93,8 @@
       "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
       "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1-G4, Exynos 2200/2400 等",
       "note": "待验证。来源未确认，请勿安装进 Facetory 工具，出事不负责"
-    {
+     },
+     {
       "name": "libvulkan_panfrost_unknown_1.so",
       "version": "Mesa 26.2.0-devel",
       "arch": "ARM aarch64",
