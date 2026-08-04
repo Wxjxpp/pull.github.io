@@ -25,13 +25,10 @@
             --purple: #7c3aed;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
             --shadow-md: 0 4px 14px rgba(0,0,0,0.05);
-            /* Buttons: non-focus state */
             --btn-bg: transparent;
             --btn-color: var(--accent);
             --btn-border: var(--accent);
         }
-
-        /* ============ Dark theme — Claude-inspired ============ */
         [data-theme="dark"] {
             --bg: #1a1a1a;
             --surface: #2a2a2a;
@@ -52,7 +49,6 @@
             --btn-color: var(--accent);
             --btn-border: var(--accent);
         }
-
         * { box-sizing: border-box; }
         html, body { transition: background 0.3s ease, color 0.3s ease; }
         body {
@@ -63,8 +59,6 @@
             line-height: 1.65;
             letter-spacing: 0.01em;
         }
-
-        /* Soft ambient gradient — warm Claude tones */
         body::before {
             content: '';
             position: fixed;
@@ -84,16 +78,11 @@
             z-index: 0;
         }
         [data-theme="dark"] body::after { background: radial-gradient(circle at 70% 60%, rgba(217,119,6,0.08) 0%, transparent 60%); }
-
         .content { position: relative; z-index: 1; }
-
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-
-        /* Theme toggle */
         .theme-toggle {
             width: 38px; height: 38px;
             border-radius: 10px;
@@ -111,16 +100,12 @@
             border-color: var(--accent);
             background: var(--accent-soft);
         }
-
-        /* Accent text — warm orange gradient */
         .title-accent {
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        /* Panel style */
         .panel {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -129,8 +114,6 @@
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .panel:hover { box-shadow: var(--shadow-md); }
-
-        /* Collapsible */
         .collapse-toggle {
             cursor: pointer; user-select: none;
             transition: all 0.2s;
@@ -144,8 +127,6 @@
         .collapse-content.collapsed { max-height: 0 !important; opacity: 0; }
         .collapse-icon { transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: inline-block; }
         .collapse-icon.rotated { transform: rotate(180deg); }
-
-        /* File card */
         .file-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -158,8 +139,6 @@
             box-shadow: var(--shadow-md);
             transform: translateY(-1px);
         }
-
-        /* Category button */
         .cat-btn {
             padding: 7px 13px;
             border-radius: 10px;
@@ -184,8 +163,6 @@
             box-shadow: 0 2px 8px var(--accent-soft);
         }
         .cat-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-        /* Search */
         .search-input {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -203,8 +180,6 @@
             box-shadow: 0 0 0 4px var(--accent-soft);
         }
         .search-input::placeholder { color: var(--text-dim); }
-
-        /* Markdown content */
         .markdown-body { color: var(--text); font-size: 14px; line-height: 1.8; }
         .markdown-body h1 {
             font-size: 1.5em;
@@ -252,8 +227,6 @@
             padding: 0.6em 1.1em; background: var(--surface2);
             border-radius: 0 10px 10px 0; color: var(--text-dim);
         }
-
-        /* Version history */
         .version-item {
             border-left: 2px solid var(--border);
             padding: 10px 16px;
@@ -265,8 +238,6 @@
             border-left-color: var(--accent);
             background: var(--surface2);
         }
-
-        /* Download button — outlined by default, filled on hover/focus/active */
         .dl-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             padding: 10px 14px; border-radius: 10px;
@@ -300,8 +271,6 @@
             color: var(--accent);
             background: var(--accent-soft);
         }
-
-        /* ===== Hamburger & Settings Panel ===== */
         .hamburger {
             width: 38px; height: 38px;
             border-radius: 10px;
@@ -314,8 +283,6 @@
             position: relative;
         }
         .hamburger:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-
-        /* Drawer overlay */
         .overlay {
             position: fixed; inset: 0;
             background: rgba(0,0,0,0.35);
@@ -325,7 +292,6 @@
             z-index: 998;
         }
         .overlay.open { opacity: 1; visibility: visible; }
-
         .drawer {
             position: fixed; top: 0; right: 0;
             width: 320px; max-width: 86vw; height: 100vh;
@@ -353,7 +319,6 @@
         }
         .drawer-close:hover { color: var(--red); background: rgba(239,68,68,0.1); }
         .drawer-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
-
         .setting-group { margin-bottom: 22px; }
         .setting-label {
             font-size: 12px; font-weight: 600; text-transform: uppercase;
@@ -387,7 +352,6 @@
         }
         .preset-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .preset-btn.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-
         .swatch-row { display: flex; gap: 10px; align-items: center; }
         .swatch-wrap { flex: 1; display: flex; flex-direction: column; gap: 4px; }
         .swatch-wrap label { font-size: 11px; color: var(--text-dim); font-weight: 500; }
@@ -398,7 +362,6 @@
             -webkit-appearance: none;
         }
         .swatch-wrap input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
-
         .reset-btn {
             width: 100%; margin-top: 8px;
             padding: 10px; border-radius: 10px;
@@ -408,13 +371,10 @@
             transition: all 0.2s;
         }
         .reset-btn:hover { color: var(--red); border-color: var(--red); background: rgba(239,68,68,0.06); }
-
         .badge {
             font-size: 11px; padding: 3px 9px;
             border-radius: 7px; font-weight: 600;
         }
-
-        /* File icon circle */
         .icon-pill {
             width: 42px; height: 42px;
             border-radius: 12px;
@@ -426,10 +386,7 @@
     </style>
 </head>
 <body>
-    <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-
-    <!-- Settings Drawer -->
     <aside class="drawer" id="settingsDrawer" role="dialog" aria-modal="true" aria-label="设置">
         <div class="drawer-header">
             <div class="drawer-title" style="color: var(--text);">
@@ -440,7 +397,6 @@
             </button>
         </div>
         <div class="drawer-body">
-            <!-- Theme mode -->
             <div class="setting-group">
                 <span class="setting-label">主题模式</span>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -454,16 +410,10 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Accent presets -->
             <div class="setting-group">
                 <span class="setting-label">强调色预设</span>
-                <div class="preset-row" id="presetRow">
-                    <!-- 8 presets injected via JS -->
-                </div>
+                <div class="preset-row" id="presetRow"></div>
             </div>
-
-            <!-- Custom accent colors -->
             <div class="setting-group">
                 <span class="setting-label">自定义强调色</span>
                 <div class="swatch-row">
@@ -480,7 +430,6 @@
                     <i class="fas fa-undo mr-1"></i> 恢复默认配色
                 </button>
             </div>
-
             <div style="font-size: 11px; color: var(--text-dim); padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.5;">
                 配色偏好保存在本地，仅影响你自己的视图。
             </div>
@@ -488,7 +437,6 @@
     </aside>
 
     <div class="content max-w-4xl mx-auto px-4 py-8">
-        <!-- Header -->
         <header class="flex items-center justify-between mb-8 pb-6" style="border-bottom: 1px solid var(--border);">
             <div>
                 <h1 class="text-2xl font-bold flex items-center gap-3 title-accent">
@@ -508,7 +456,6 @@
             </div>
         </header>
 
-        <!-- README Section -->
         <div class="mb-6 panel">
             <div class="collapse-toggle flex items-center justify-between px-5 py-4" onclick="toggleReadme()">
                 <div class="flex items-center gap-2.5">
@@ -527,7 +474,6 @@
             </div>
         </div>
 
-        <!-- VulkanCapsViewer Section -->
         <div class="mb-6 panel">
             <div class="collapse-toggle flex items-center justify-between px-5 py-4" onclick="toggleCapsViewer()">
                 <div class="flex items-center gap-2.5">
@@ -549,12 +495,10 @@
             </div>
         </div>
 
-        <!-- Category Nav -->
         <div class="mb-4">
             <div class="flex flex-wrap gap-2" id="categoryNav"></div>
         </div>
 
-        <!-- Search -->
         <div class="mb-4 relative">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-dim); z-index: 2;"></i>
             <input type="text" id="searchInput"
@@ -563,7 +507,6 @@
                 oninput="applyFilter()" />
         </div>
 
-        <!-- File List -->
         <div class="panel overflow-hidden">
             <div class="px-5 py-4 flex items-center justify-between" style="border-bottom: 1px solid var(--border);">
                 <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-dim);">
@@ -581,10 +524,152 @@
     </div>
 
     <script>
-        const EMBEDDED_FILES = /* AUTO_GENERATED_DATA */;
+        const EMBEDDED_FILES = {
+  "snapdragon": [
+    {
+      "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
+      "size": 14343704,
+      "sizeHuman": "13.7 MB",
+      "meta": {
+        "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
+        "version": "Mesa 26.3.0-devel",
+        "arch": "ARM aarch64",
+        "source": "https://github.com/The412Banner/Banners-Turnip",
+        "gpu": "Adreno 710, 720",
+        "gpuGen": "Adreno 7xx (710/720 补丁版)",
+        "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720 的设备",
+        "note": "Banners-Turnip 构建，含 710/720 专项补丁，2026-08-01 版本"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno.so",
+      "size": 10393544,
+      "sizeHuman": "9.9 MB",
+      "meta": {
+        "name": "libvulkan_freedreno.so",
+        "version": "Mesa 24.3.2",
+        "arch": "ARM aarch64",
+        "source": "Mesa 官方构建",
+        "gpu": "Adreno 618, 630",
+        "gpuGen": "Adreno 6xx",
+        "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 618/630 的设备",
+        "note": "Mesa 24.3.2 稳定版 freedreno (Turnip)"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno_25.0.1.so",
+      "size": 11748520,
+      "sizeHuman": "11.2 MB",
+      "meta": {
+        "name": "libvulkan_freedreno_25.0.1.so",
+        "version": "Mesa 25.0.1",
+        "arch": "ARM aarch64",
+        "source": "Mesa 官方构建",
+        "gpu": "Adreno 618, 630",
+        "gpuGen": "Adreno 6xx",
+        "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 618/630 的设备",
+        "note": "Mesa 25.0.1 稳定版 freedreno (Turnip)"
+      }
+    },
+    {
+      "name": "libvulkan_freedreno_26.2.0(1).so",
+      "size": 18606849,
+      "sizeHuman": "17.7 MB",
+      "meta": {
+        "name": "libvulkan_freedreno_26.2.0(1).so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "source": "https://github.com/The412Banner/Banners-Turnip",
+        "gpu": "Adreno 618, 623, 630, 810, 825, 829, 830, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx / 8xx (标准版)",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 8s Gen 3, 7+ Gen 3, X Elite 等",
+        "note": "Banners-Turnip 标准版 (A6xx/A7xx)，Mesa 26.2.0-devel，无额外补丁"
+      }
+    },
+    {
+      "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
+      "size": 17159433,
+      "sizeHuman": "16.4 MB",
+      "meta": {
+        "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
+        "version": "Mesa 26.0.0-devel",
+        "arch": "ARM aarch64",
+        "source": "https://github.com/The412Banner/Banners-Turnip",
+        "gpu": "Adreno 618, 623, 630, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx (标准版)",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, X Elite 等",
+        "note": "Banners-Turnip R8 构建，Mesa 26.0.0-devel，覆盖 a6xx-a7xx"
+      }
+    }
+  ],
+  "mali": [
+    {
+      "name": "libvulkan_panfrost(1).so",
+      "size": 12560168,
+      "sizeHuman": "12.0 MB",
+      "meta": {
+        "name": "libvulkan_panfrost(1).so",
+        "version": "Mesa 25.2.8 (Ubuntu)",
+        "arch": "ARM aarch64",
+        "source": "Ubuntu 软件源",
+        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
+        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
+        "devices": "麒麟 810/820/980/990, 天玑 700-1200, Tensor G1/G2, Exynos 980-1280 等",
+        "note": "PanVK — Mesa 官方支持列表。注意：G71 / G710 不在支持范围内"
+      }
+    },
+    {
+      "name": "libvulkan_panfrost_26.1.6-r0.so",
+      "size": 15113960,
+      "sizeHuman": "14.4 MB",
+      "meta": {
+        "name": "libvulkan_panfrost_26.1.6-r0.so",
+        "version": "Mesa 26.1.6",
+        "arch": "ARM aarch64",
+        "source": "Mesa 官方构建",
+        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
+        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
+        "devices": "麒麟 810/820/980/990, 天玑 700-1200, Tensor G1/G2, Exynos 980-1280 等",
+        "note": "PanVK Mesa 26.1.6 稳定版"
+      }
+    },
+    {
+      "name": "libvulkan_panfrost_unknown_1.so",
+      "size": 17884096,
+      "sizeHuman": "17.1 MB",
+      "meta": {
+        "name": "libvulkan_panfrost_unknown_1.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "source": "未知来源",
+        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
+        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
+        "devices": "麒麟 9000, 天玑 9000+, Tensor G3/G4, Exynos 2200+ 等",
+        "note": "PanVK Mesa 26.2.0-devel，来源未确认"
+      }
+    }
+  ],
+  "待验证": [
+    {
+      "name": "libvulkan_panfrost.so",
+      "size": 102798568,
+      "sizeHuman": "98.0 MB",
+      "meta": {
+        "name": "libvulkan_panfrost.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "source": "未知来源",
+        "gpu": "Mali-G72, G31, G51, G52, G76, G57, G310, G610, G720, G725, G1-Pro/Premium/Ultra",
+        "gpuGen": "Bifrost (v6/v7) / Valhall (v9/v10) / 5th Gen (v12-v14)",
+        "devices": "麒麟 9000/9000S/9010/9020, 天玑 9000/9200/9300/9400, Tensor G1-G4, Exynos 2200/2400 等",
+        "note": "待验证。来源未确认，请勿安装进 Factory 分区，出事不负责"
+      }
+    }
+  ]
+};
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/Wxjxpp/pull.github.io@main";
         const RAW_BASE = "https://raw.githubusercontent.com/Wxjxpp/pull.github.io/main";
-        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024; // 50MB
+        const LARGE_FILE_THRESHOLD = 50 * 1024 * 1024;
 
         const CATEGORIES = {
             'all': { name: '全部', icon: 'fa-globe', color: 'bg-gray-600' },
@@ -601,7 +686,6 @@
 
         let currentCategory = 'all';
 
-        // ============ README ============
         let readmeOpen = true;
         async function loadReadme() {
             const body = document.getElementById('readmeBody');
@@ -627,14 +711,11 @@
             }
         }
 
-        // ============ VulkanCapsViewer ============
         let capsOpen = true;
-
         function fetchCapsViewer() {
             const el = document.getElementById('capsBody');
             const versionEl = document.getElementById('capsVersion');
             versionEl.textContent = 'v4.12';
-
             const html = `
                 <div class="p-4 rounded-lg space-y-3" style="background: var(--surface2);">
                     <div class="flex items-center gap-2">
@@ -642,11 +723,9 @@
                         <span class="font-semibold text-sm" style="color: var(--accent);">VulkanCapsViewer</span>
                         <span class="text-xs" style="color: var(--text-dim);">v4.12</span>
                     </div>
-
                     <p class="text-xs leading-relaxed" style="color: var(--text-dim);">
                         查看设备 Vulkan 能力、扩展、限制等详细信息。点击下方按钮前往官方下载页，找到 <b style="color: var(--text);">Android arm64</b> 的 APK 下载即可。
                     </p>
-
                     <div class="flex flex-wrap gap-2">
                         <a href="https://vulkan.gpuinfo.org/download.php" target="_blank" rel="noopener" class="dl-btn">
                             <i class="fas fa-download"></i> 前往官方下载页
@@ -655,14 +734,12 @@
                             <i class="fab fa-google-play"></i> Google Play
                         </a>
                     </div>
-
                     <p class="text-xs" style="color: var(--text-dim);">
                         <i class="fas fa-info-circle"></i> 在官方页面找到 <b style="color: var(--text);">vulkancapsviewer 4.12 arm apk</b> 点击下载
                     </p>
                 </div>`;
             el.innerHTML = html;
         }
-
         function toggleCapsViewer() {
             capsOpen = !capsOpen;
             const content = document.getElementById('capsContent');
@@ -676,7 +753,6 @@
             }
         }
 
-        // ============ File List ============
         function getCDNUrl(category, name, size) {
             if (size && size > LARGE_FILE_THRESHOLD) {
                 return `${RAW_BASE}/vulkans/${category}/${encodeURIComponent(name)}`;
@@ -726,7 +802,6 @@
         function renderFileList(files, searchQuery) {
             const container = document.getElementById('fileList');
             const badge = document.getElementById('fileCount');
-
             let filtered = files;
             if (searchQuery) {
                 filtered = files.filter(f => {
@@ -736,7 +811,6 @@
                     return text.includes(searchQuery);
                 });
             }
-
             if (filtered.length === 0) {
                 container.innerHTML = `
                     <div class="p-12 text-center">
@@ -748,9 +822,7 @@
                 badge.textContent = searchQuery ? '无匹配结果' : '0 个文件';
                 return;
             }
-
             badge.textContent = searchQuery ? `找到 ${filtered.length} 个匹配` : `${filtered.length} 个文件`;
-
             container.innerHTML = filtered.map(f => {
                 const ext = f.name.split('.').pop().toLowerCase();
                 const icon = getFileIcon(ext);
@@ -758,8 +830,7 @@
                 const catLabel = currentCategory === 'all' && CATEGORIES[f.category]
                     ? `<span class="badge ml-2" style="background: var(--surface2); color: var(--accent);">${CATEGORIES[f.category].name}</span>`
                     : '';
-
-                        let metaHtml = '';
+                let metaHtml = '';
                 if (m) {
                     metaHtml = `
                         <div class="mt-1.5 space-y-1 text-xs">
@@ -784,7 +855,6 @@
                             </div>
                         </div>`;
                 }
-
                 return `
                     <div class="file-card p-4 sm:p-5">
                         <div class="flex items-start gap-4">
@@ -819,13 +889,11 @@
             const breadcrumb = document.getElementById('breadcrumb');
             const searchInput = document.getElementById('searchInput');
             searchInput.value = '';
-
             if (currentCategory === 'all') {
                 breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2" style="color: var(--amber);"></i>/vulkans`;
             } else {
                 breadcrumb.innerHTML = `<i class="fas fa-folder-open mr-2" style="color: var(--amber);"></i>/vulkans/<span style="color: var(--accent);">${currentCategory}</span>`;
             }
-
             const files = getCategoryFiles(currentCategory);
             renderFileList(files, '');
         }
@@ -847,13 +915,11 @@
             return icons[ext] || 'fas fa-file';
         }
 
-        // ============ Theme ============
         const THEME_KEY = 'vulkans_theme';
         const ACCENT_KEY = 'vulkans_accent';
         const DEFAULT_ACCENT_LIGHT = { a: '#d97706', b: '#f59e0b' };
         const DEFAULT_ACCENT_DARK  = { a: '#f59e0b', b: '#fbbf24' };
 
-        // 8 beautiful presets
         const ACCENT_PRESETS = [
             { id: 'claude',  name: 'Claude', a: '#d97706', b: '#f59e0b' },
             { id: 'ocean',   name: '海洋',   a: '#0284c7', b: '#0ea5e9' },
@@ -872,16 +938,13 @@
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             try { localStorage.setItem(THEME_KEY, theme); } catch {}
-            // Refresh mode buttons highlight
             updateModeButtons();
-            // Re-apply accent for the mode (if user has custom)
             const saved = loadAccentFromStorage();
             if (saved) {
-                _applyAccentRaw(saved.a, saved.b, /*persist*/ false);
+                _applyAccentRaw(saved.a, saved.b, false);
             } else {
-                // Reset to default for this mode
                 const def = theme === 'dark' ? DEFAULT_ACCENT_DARK : DEFAULT_ACCENT_LIGHT;
-                _applyAccentRaw(def.a, def.b, /*persist*/ false);
+                _applyAccentRaw(def.a, def.b, false);
             }
         }
 
@@ -910,7 +973,6 @@
             setTheme(next);
         }
 
-        // ============ Accent Colors ============
         function hexToRgba(hex, alpha = 1) {
             const h = (hex || '').replace('#', '');
             if (h.length < 6) return `rgba(0,0,0,${alpha})`;
@@ -935,12 +997,10 @@
             root.style.setProperty('--accent', a);
             root.style.setProperty('--accent2', b);
             root.style.setProperty('--accent-soft', hexToRgba(a, 0.08));
-            // Sync swatch inputs
             const sa = document.getElementById('swatchA');
             const sb = document.getElementById('swatchB');
             if (sa) sa.value = a;
             if (sb) sb.value = b;
-            // Preset highlight
             highlightPreset(a, b);
             if (persist) {
                 try { localStorage.setItem(ACCENT_KEY, JSON.stringify({ a, b })); } catch {}
@@ -992,7 +1052,6 @@
             `).join('');
         }
 
-        // ============ Drawer ============
         function openDrawer() {
             document.getElementById('settingsDrawer').classList.add('open');
             document.getElementById('overlay').classList.add('open');
@@ -1009,18 +1068,15 @@
             open ? closeDrawer() : openDrawer();
         }
 
-        // ============ Init ============
         window.onload = () => {
             initTheme();
             renderPresets();
-            // Apply accent (custom saved or default for mode)
             const saved = loadAccentFromStorage();
             const mode = currentMode();
             const def = mode === 'dark' ? DEFAULT_ACCENT_DARK : DEFAULT_ACCENT_LIGHT;
             if (saved) _applyAccentRaw(saved.a, saved.b, false);
             else _applyAccentRaw(def.a, def.b, false);
             updateModeButtons();
-
             loadReadme();
             fetchCapsViewer();
             renderCategoryNav();
