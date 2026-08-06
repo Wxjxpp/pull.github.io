@@ -13,14 +13,13 @@ Vulkan 驱动下载站，收集各平台 Turnip / Freedreno / Panfrost 等 Mesa 
 | Mali (麒麟/其他) | Mali-Gxx | 麒麟 9000 / 9020 |
 | PowerVR（不受支持）| PowerVR| 虎贲 / 部分入门芯片|
 
-## Facetory中所适配的GPU
+## Facetory中所适配的移动端GPU
 
-︎● Apple A13 Bionic (iPhone 11) 及更高
-︎● Qualcomm Snapdragon 865 及更高
-︎● MediaTek Dimensity 1000 及更高
-︎● Google Tensor G2 及更高
-︎● Samsung Exynos 990 及更高
-︎● HUAWEI Kirin 9000 及更高
+- Qualcomm Snapdragon 865 或更高
+- MediaTek Dimensity 1000 或更高
+- Google Tensor G2 或更高
+- Samsung Exynos 990 或更高
+- HUAWEI Kirin 9000 或更高
 
 详见[Facetory仓库说明](https://github.com/AstralSightStudios/Facetory)
 >[!TIP]
