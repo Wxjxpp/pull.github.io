@@ -527,26 +527,11 @@
         const EMBEDDED_FILES = {
   "snapdragon": [
     {
-      "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
-      "size": 14343704,
-      "sizeHuman": "13.7 MB",
-      "meta": {
-        "name": "Turnip-v26.3.0-20260801-r5-710-720-Test.so",
-        "version": "Mesa 26.3.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 710, 720，722",
-        "gpuGen": "Adreno 7xx",
-        "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720/722 的设备",
-        "note": "Banners-Turnip 构建，含 710/720 专项补丁，2026-08-01 版本"
-      }
-    },
-    {
-      "name": "libvulkan_freedreno.so",
+      "name": "freedreno_24.3.2.so",
       "size": 10393544,
       "sizeHuman": "9.9 MB",
       "meta": {
-        "name": "libvulkan_freedreno.so",
+        "name": "freedreno_24.3.2.so",
         "version": "Mesa 24.3.2",
         "arch": "ARM aarch64",
         "source": "Mesa 官方构建",
@@ -554,6 +539,51 @@
         "gpuGen": "Adreno 6xx",
         "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 6系列 的设备",
         "note": "Mesa 24.3.2 稳定版 freedreno (Turnip)"
+      }
+    },
+    {
+      "name": "freedreno_26.2.0-devel.so",
+      "size": 18606849,
+      "sizeHuman": "17.7 MB",
+      "meta": {
+        "name": "freedreno_26.2.0-devel.so",
+        "version": "Mesa 26.2.0-devel",
+        "arch": "ARM aarch64",
+        "source": "PurpleVK，Turnip 二改，下载来源未知",
+        "gpu": "Adreno 618, 623, 630, 810, 825, 829, 830, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx / 8xx (标准版)",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 8s Gen 3, 7+ Gen 3, X Elite 等",
+        "note": "Banners-Turnip 标准版 (A6xx/A7xx)，Mesa 26.2.0-devel，无额外补丁"
+      }
+    },
+    {
+      "name": "freedreno_v26.0.0_R8_a6xx_a7xx.so",
+      "size": 17159433,
+      "sizeHuman": "16.4 MB",
+      "meta": {
+        "name": "freedreno_v26.0.0_R8_a6xx_a7xx.so",
+        "version": "Mesa 26.0.0-devel",
+        "arch": "ARM aarch64",
+        "source": "https://github.com/The412Banner/Banners-Turnip",
+        "gpu": "Adreno 618, 623, 630, 840, X1-45, X1-85, X2-85",
+        "gpuGen": "Adreno 6xx / 7xx (标准版)",
+        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, X Elite，865 等",
+        "note": "Banners-Turnip R8 构建，Mesa 26.0.0-devel，覆盖 a6xx-a7xx"
+      }
+    },
+    {
+      "name": "freedreno_v26.3.0-20260801-r5-710-722-Test.so",
+      "size": 14343704,
+      "sizeHuman": "13.7 MB",
+      "meta": {
+        "name": "freedreno_v26.3.0-20260801-r5-710-722-Test.so",
+        "version": "Mesa 26.3.0-devel",
+        "arch": "ARM aarch64",
+        "source": "https://github.com/The412Banner/Banners-Turnip",
+        "gpu": "Adreno 710, 720，722",
+        "gpuGen": "Adreno 7xx",
+        "devices": "骁龙 7 Gen 3, 7s Gen 2, 6 Gen 3 等搭载 Adreno 710/720/722 的设备",
+        "note": "Banners-Turnip 构建，为 710/720/722 适配，Experimental，不保证稳定性何可用性"
       }
     },
     {
@@ -569,36 +599,6 @@
         "gpuGen": "Adreno 6xx",
         "devices": "骁龙 865/870/888/8 Gen 1 等搭载 Adreno 618/630 的设备",
         "note": "Mesa 25.0.1 稳定版 freedreno (Turnip)"
-      }
-    },
-    {
-      "name": "libvulkan_freedreno_26.2.0(1).so",
-      "size": 18606849,
-      "sizeHuman": "17.7 MB",
-      "meta": {
-        "name": "libvulkan_freedreno_26.2.0(1).so",
-        "version": "Mesa 26.2.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 618, 623, 630, 810, 825, 829, 830, 840, X1-45, X1-85, X2-85",
-        "gpuGen": "Adreno 6xx / 7xx / 8xx (标准版)",
-        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 8s Gen 3, 7+ Gen 3, X Elite 等",
-        "note": "Banners-Turnip 标准版 (A6xx/A7xx)，Mesa 26.2.0-devel，无额外补丁"
-      }
-    },
-    {
-      "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
-      "size": 17159433,
-      "sizeHuman": "16.4 MB",
-      "meta": {
-        "name": "turnip_v26.0.0_R8_a6xx_a7xx.so",
-        "version": "Mesa 26.0.0-devel",
-        "arch": "ARM aarch64",
-        "source": "https://github.com/The412Banner/Banners-Turnip",
-        "gpu": "Adreno 618, 623, 630, 840, X1-45, X1-85, X2-85",
-        "gpuGen": "Adreno 6xx / 7xx (标准版)",
-        "devices": "骁龙 8 Elite, 8 Gen 3/2/1, 7+ Gen 3, X Elite，865 等",
-        "note": "Banners-Turnip R8 构建，Mesa 26.0.0-devel，覆盖 a6xx-a7xx"
       }
     }
   ],
