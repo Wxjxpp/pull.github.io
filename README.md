@@ -2,11 +2,7 @@
 ## 这是什么？
 一个 Vulkan 驱动下载站，收集各平台 Turnip / Freedreno / Panfrost 等 Mesa Vulkan 驱动。
 本项目旨用于收集并分享 可以用于设备 GPU VK版本 不支持、不完整及不适配的设备能够使用 Facetory 进行表盘编辑
-因为市面上的驱动版本极多且资料复杂，故这个项目花了我们不少精力，给个免费的Star支持一下🌟
-
-## 喜报
-
-[Drific](https://gitHub.com/Drific) 尝试将 Mesa 的源码通过 GitHub workflow 构建获得编译产物，并获得了初步的[成功](https://gitHub.com/Drific/mesa-24.1.3/actions/runs/31358755998)，但是目前仍然仅打通 24.1.3 版本的 PanVK 构建，可以去期待一下。
+因为市面上的驱动版本极多且资料复杂，故这个项目花了我们不少精力，给个免费的Star支持一下！
 
 ## 叠甲
 本项目中所分享的驱动并非全部经过测试，故部分驱动对部分设备可能出现:
