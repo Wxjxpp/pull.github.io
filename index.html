@@ -468,7 +468,7 @@
             <div class="collapse-content" id="readmeContent" style="max-height: 2000px;">
                 <div class="px-5 pb-5 markdown-body" id="readmeBody">
                     <div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);">
-                        <i class="fas fa-spinner fa-pulse"></i> 加载中...
+                        <i class="fas fa-spinner fa-pulse"></i> 请稍等，故事之王正在赶来…
                     </div>
                 </div>
             </div>
@@ -489,7 +489,7 @@
             <div class="collapse-content" id="capsContent" style="max-height: 2000px;">
                 <div class="px-5 pb-5" id="capsBody">
                     <div class="flex items-center gap-3 py-8 justify-center" style="color: var(--text-dim);">
-                        <i class="fas fa-spinner fa-pulse"></i> 加载中...
+                        <i class="fas fa-spinner fa-pulse"></i> 哎呀哎呀，正在吃小饼干…
                     </div>
                 </div>
             </div>
@@ -502,7 +502,7 @@
         <div class="mb-4 relative">
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-dim); z-index: 2;"></i>
             <input type="text" id="searchInput"
-                placeholder="搜索 GPU 型号、设备名称或文件名...（如 Adreno 740、天玑 9300）"
+                placeholder="搜索 GPU 型号、设备名称或文件名..."
                 class="search-input"
                 oninput="applyFilter()" />
         </div>
@@ -513,7 +513,7 @@
                     <i class="fas fa-folder-open" style="color: var(--amber);"></i>
                     <span id="breadcrumb">/vulkans</span>
                 </div>
-                <div id="fileCount" class="text-xs uppercase tracking-wider" style="color: var(--text-dim);">加载中...</div>
+                <div id="fileCount" class="text-xs uppercase tracking-wider" style="color: var(--text-dim);">正在啃爆提拉米苏…</div>
             </div>
             <div id="fileList" class="p-3 sm:p-4 space-y-2"></div>
         </div>
@@ -695,7 +695,7 @@
                 const md = await resp.text();
                 body.innerHTML = marked.parse(md);
             } catch (e) {
-                body.innerHTML = `<p style="color: var(--text-dim);">暂无 README 说明文件</p>`;
+                body.innerHTML = `<p style="color: var(--text-dim);">哎？你的网络似乎有些问题，README没有加载出来哎！</p>`;
             }
         }
         function toggleReadme() {
@@ -728,7 +728,7 @@
                     </p>
                     <div class="flex flex-wrap gap-2">
                         <a href="https://vulkan.gpuinfo.org/download.php" target="_blank" rel="noopener" class="dl-btn">
-                            <i class="fas fa-download"></i> 前往官方下载页
+                            <i class="fas fa-download"></i> 官方下载页
                         </a>
                         <a href="https://play.google.com/store/apps/details?id=de.saschawillems.vulkancapsviewer" target="_blank" rel="noopener" class="dl-btn-sm">
                             <i class="fab fa-google-play"></i> Google Play
@@ -817,12 +817,12 @@
                         <i class="fas fa-inbox text-4xl mb-4 block" style="color: var(--border);"></i>
                         ${searchQuery
                             ? '<p style="color: var(--text-dim);">没有匹配「<span style="color: var(--text);">' + escapeHtml(searchQuery) + '</span>」的结果</p>'
-                            : '<p style="color: var(--text-dim);">该分类下暂无文件</p>'}
+                            : '<p style="color: var(--text-dim);">嘿，我们没找到文件</p>'}
                     </div>`;
-                badge.textContent = searchQuery ? '无匹配结果' : '0 个文件';
+                badge.textContent = searchQuery ? '你搜的是个啥，我没似乎没有' : '0 个文件';
                 return;
             }
-            badge.textContent = searchQuery ? `找到 ${filtered.length} 个匹配` : `${filtered.length} 个文件`;
+            badge.textContent = searchQuery ? `哎呦！这里有 ${filtered.length} 个匹配` : `${filtered.length} 个文件`;
             container.innerHTML = filtered.map(f => {
                 const ext = f.name.split('.').pop().toLowerCase();
                 const icon = getFileIcon(ext);
