@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'vulkans/**'
+      - 'news.md'
+      - 'about.md'
       - 'update-index.py'
       - '.github/workflows/update-index.yml'
 

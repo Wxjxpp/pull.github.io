@@ -164,32 +164,20 @@ def load_news():
     if not text:
         return []
 
+    # Split on --- lines, then pair consecutive blocks: (front_matter, body)
     raw_blocks = re.split(r'(?m)^---\s*$', text)
+    blocks = [b.strip() for b in raw_blocks if b.strip()]
     items = []
-    for block in raw_blocks:
-        block = block.strip()
-        if not block:
-            continue
-        lines = block.splitlines()
+    for i in range(0, len(blocks), 2):
+        meta_text = blocks[i]
+        body = blocks[i + 1] if i + 1 < len(blocks) else ''
         meta = {}
-        body_start = 0
-        for i, line in enumerate(lines):
-            if not line.strip():
-                if meta:
-                    body_start = i + 1
-                    break
-                body_start = i + 1
-                continue
+        for line in meta_text.splitlines():
             m = re.match(r'^([\w\-]+)\s*:\s*(.*)$', line)
             if m:
                 key = m.group(1).lower()
                 if key in ('title', 'date', 'tag', 'link', 'url', 'summary'):
                     meta[key if key != 'url' else 'link'] = _parse_simple_yaml_value(m.group(2))
-                    body_start = i + 1
-                    continue
-            body_start = i
-            break
-        body = '\n'.join(lines[body_start:]).strip()
         title = str(meta.get('title') or '').strip()
         if not title:
             first = body.splitlines()[0].strip() if body else ''
