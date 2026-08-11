@@ -212,14 +212,17 @@ def replace_js_const_fixed(html, const_name, value_js):
     if placeholder in html:
         return html.replace(placeholder, value_js, 1)
 
-    # Match pretty-printed object/array ending with newline before closing + semicolon
-    pattern = rf'const {re.escape(const_name)} = (?:\{{[\s\S]*?\n\}}|\[[\s\S]*?\n\]);'
-    if re.search(pattern, html):
-        return re.sub(pattern, full_line, html, count=1)
-
-    pattern2 = rf'const {re.escape(const_name)} = (?:\{{[\s\S]*?\}}|\[[\s\S]*?\]);'
-    if re.search(pattern2, html):
-        return re.sub(pattern2, full_line, html, count=1)
+    # Match pretty-printed object/array: { ... } or [ ... ]
+    patterns = [
+        r'const ' + re.escape(const_name) + r' = (?:\{{[\s\S]*?\n\}}|\[[\s\S]*?\n\]);',
+        r'const ' + re.escape(const_name) + r' = (?:\{{[\s\S]*?\}}|\[[\s\S]*?\]);',
+        r'const ' + re.escape(const_name) + r' = (?:\{[\s\S]*?\n\}|\[[\s\S]*?\n\]);',
+        r'const ' + re.escape(const_name) + r' = (?:\{[\s\S]*?\}|\[[\s\S]*?\]);',
+    ]
+    for p in patterns:
+        m = re.search(p, html)
+        if m:
+            return html[:m.start()] + full_line + html[m.end():]
 
     print(f'ERROR: 未找到 {const_name} 数据块')
     return None
