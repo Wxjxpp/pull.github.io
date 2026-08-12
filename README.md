@@ -50,6 +50,5 @@
 2. 选择对应分类下载 `.so` 文件
 3. 导入至Facetory以正常使用
 
-## 外部工具
-
-- [VulkanCapsViewer](https://vulkan.gpuinfo.org/download.php) — 查看设备 Vulkan 能力，详见官网
+## 贡献
+[贡献指南](./contribution.md)
