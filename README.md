@@ -40,9 +40,12 @@
 >当前仓库未开放，请耐心等候
 ## 驱动说明
 
-- **Turnip** — 高通 Adreno 开源 Vulkan 驱动（Mesa Freedreno 项目）
-- **libvulkan_freedreno** — Freedreno 官方 Vulkan 驱动
-- **libvulkan_panfrost** — ARM Mali 开源 Vulkan 驱动（Mesa Panfrost 项目）
+- **Turnip** — 为 Adreno 准备的 Vulkan 驱动 (Mesa Freedreno)
+- **PanVK** — 为 ARM Mali 准备的 Vulkan 驱动 (Mesa Panfrost)
+
+>以上这些均非官方驱动
+>
+>（官方的定义指：Soc发行厂商）
 
 ## 使用方法
 
