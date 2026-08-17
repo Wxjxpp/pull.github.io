@@ -7,4 +7,7 @@
 以及QQ群中的群友，因为有了他们的亲身体验和重要反馈，该项目才能越来越好
 
 ## 提出建议
-如果你有其他的想法或者建议，欢迎在 [Wxjxpp的博客](https://wxjxpp.github.io/blog.github.io/)下留言，我们会及时回复
+如果你有其他的想法或者建议，欢迎在 [Wxjxpp的博客](https://wxjblog.de5.net/post/VK%20For%20Facetory-lian-xi-fan-kui.html)下留言，我们会及时回复
+
+
+这里是空行
